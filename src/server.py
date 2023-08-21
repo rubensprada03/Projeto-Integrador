@@ -79,7 +79,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
                             detail="Email ou senha incorretos"
                            )
     
-    # Verifica se o ID do usuário é igual a 5
+    # Verifica se o ID do usuário é igual a 1
     if user.id != 1:
         raise HTTPException(status_code=403,
                             detail="Acesso não autorizado"
