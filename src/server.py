@@ -28,7 +28,11 @@ app.add_middleware(
 # CRIAR USUARIO                                                    
 @app.post('/usuario', status_code=status.HTTP_201_CREATED)
 def criar_usuario(usuario: Usuario, session: Session = Depends(get_db)):
-    usuario_criado = RepositorioUsuario(session).criar(usuario)
+    if usuario.senha != usuario.confirmar_senha:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas não coincidem")
+
+    repo_usuario = RepositorioUsuario(session)
+    usuario_criado = repo_usuario.criar(usuario)
     return usuario_criado
 
 # LISTAR USUARIO
@@ -68,9 +72,10 @@ def excluir_usuario(usuario_id: int, session: Session = Depends(get_db)):
 
 
 
+# Rota para autenticação de login
 @app.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_db)):
-    # Autentica as credenciais
+    # Autentica as credenciais do usuário
     repo_usuario = RepositorioUsuario(session)
     user = repo_usuario.autenticar(form_data.username, form_data.password)
     
@@ -78,9 +83,9 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
         raise HTTPException(status_code=403,
                             detail="Email ou senha incorretos"
                            )
-    
-    # Verifica se o ID do usuário é igual a 1
-    if user.id != 1:
+
+    # Verifica se o grupo do usuário é igual a "admin"
+    if user.grupo != "admin":
         raise HTTPException(status_code=403,
                             detail="Acesso não autorizado"
                            )
@@ -89,6 +94,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
         "access_token": criar_token_jwt(user.id),
         "token_type": "bearer",
     }
+
 
 
 

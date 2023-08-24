@@ -7,10 +7,12 @@ class Usuario(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String)
+    cpf = Column(String(length=11))
     email = Column(String)
     senha = Column(String)
     endereco = Column(String)
     telefone = Column(String)
+    grupo = Column(String, default="estoquista") 
 
 class Produto(Base):
 
