@@ -47,6 +47,7 @@ def editar_usuario(usuario_id: int, novo_usuario: Usuario, session: Session = De
     repo_usuario = RepositorioUsuario(session)
     usuario_existente = repo_usuario.obter_por_id(usuario_id)
 
+
     if usuario_existente is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
 
