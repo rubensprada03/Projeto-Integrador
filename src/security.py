@@ -18,6 +18,7 @@ def criar_token_jwt(subject: Union[str, Any]) -> str:
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm="HS512")
     return encoded_jwt
 
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
