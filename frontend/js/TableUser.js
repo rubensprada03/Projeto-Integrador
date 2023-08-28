@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <th>Telefone</th>
                     <th>Grupo</th>
                     <th>CPF</th>
+                    <th>Status</>
                     <th>Editar</th>
                 </tr>
             </thead>
@@ -29,7 +30,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <td>${usuario.telefone}</td>
                         <td>${usuario.grupo}</td>
                         <td>${usuario.cpf}</td>
-                        <td><button class="edit-button" data-user-id="${usuario.id}">Editar</button></td>
+                        <td>${usuario.status}</td>
+                        <td>
+                            <button class="edit-button" data-user-id="${usuario.id}" style="cursor: pointer;">Editar</button>
+                            <span style="cursor: pointer;">&#x2716;</span>
+                        </td>
+
+
+                        
                     </tr>
                 `).join('')}
             </tbody>
