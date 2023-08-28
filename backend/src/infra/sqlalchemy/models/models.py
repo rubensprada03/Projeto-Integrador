@@ -12,7 +12,8 @@ class Usuario(Base):
     senha = Column(String)
     endereco = Column(String)
     telefone = Column(String)
-    grupo = Column(String, default="estoquista") 
+    status = Column(Boolean, default=True)
+    grupo = Column(String, default="estoquista")
 
 class Produto(Base):
 

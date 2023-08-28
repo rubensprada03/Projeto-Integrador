@@ -11,17 +11,18 @@ class RepositorioUsuario():
         self.session = session
 
     def criar(self, usuario: schemas.Usuario):
-        # Verifique se o email já está em uso
         if self.obter_por_email(usuario.email):
             raise HTTPException(status_code=400, detail="Email já está em uso")
+        
+        if self.obter_por_cpf(usuario.cpf):
+            raise HTTPException(status_code=400, detail="Cpf ja em uso")
 
-        # Verifique se as senhas coincidem
         if usuario.senha != usuario.confirmar_senha:
             raise HTTPException(status_code=400, detail="As senhas não coincidem")
 
         # Gere o hash da senha usando bcrypt
         senha_hash = bcrypt.hashpw(usuario.senha.encode('utf-8'), bcrypt.gensalt())
-
+        
         usuario_bd = models.Usuario(nome=usuario.nome,
                                     cpf=usuario.cpf,
                                     email=usuario.email,
@@ -44,6 +45,10 @@ class RepositorioUsuario():
 
     def obter_por_email(self, email: str):
         return self.session.query(models.Usuario).filter(models.Usuario.email == email).first()
+    
+    def obter_por_cpf(self, cpf: str):
+        return self.session.query(models.Usuario).filter_by(cpf=cpf).first()
+
 
     def listar(self):
         # Executa uma consulta SELECT para buscar todos os usuários no banco de dados
@@ -78,3 +83,12 @@ class RepositorioUsuario():
             return usuario
 
         return None
+
+    def ativar_usuario(self, usuario: models.Usuario):
+        usuario.status = True
+        self.session.commit()
+
+    def desativar_usuario(self, usuario: models.Usuario):
+        usuario.status = False
+        self.session.commit()
+

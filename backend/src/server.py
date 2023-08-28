@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, status, HTTPException, Response, Form
+from fastapi import FastAPI, Depends, status, HTTPException, Response
 from sqlalchemy.orm import Session
 from src.schemas.schemas import Produto, Usuario
 from src.schemas import schemas
@@ -42,20 +42,42 @@ def listar_usuario(session: Session = Depends(get_db)):
     return usuario
 
 # EDITAR USUARIO
+import bcrypt
+
+# ... Outras importações e definições ...
+
 @app.put('/usuario/{usuario_id}', status_code=status.HTTP_200_OK)
-def editar_usuario(usuario_id: int, novo_usuario: Usuario, session: Session = Depends(get_db)):
+def editar_usuario(
+    usuario_id: int,
+    novo_usuario: dict,
+    session: Session = Depends(get_db)
+):
     repo_usuario = RepositorioUsuario(session)
     usuario_existente = repo_usuario.obter_por_id(usuario_id)
-
 
     if usuario_existente is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
 
-    # Remove o campo 'id' do novo_usuario
-    novo_usuario_dict = novo_usuario.dict(exclude={'id'})
+    campos_permitidos = {'nome', 'cpf', 'senha', 'confirmar_senha', 'grupo'}
+    campos_para_atualizar = {campo: novo_usuario[campo] for campo in campos_permitidos if campo in novo_usuario}
 
-    usuario_atualizado = repo_usuario.editar(usuario_existente, novo_usuario_dict)
+    if 'senha' in campos_para_atualizar or 'confirmar_senha' in campos_para_atualizar:
+        senha = campos_para_atualizar.get('senha')
+        confirmar_senha = campos_para_atualizar.get('confirmar_senha')
+
+        if senha != confirmar_senha:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas não coincidem")
+
+        # Criptografar a senha antes de armazená-la
+        senha_criptografada = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
+        campos_para_atualizar['senha'] = senha_criptografada
+
+        # Lógica de validação de senha
+
+    usuario_atualizado = repo_usuario.editar(usuario_existente, campos_para_atualizar)
     return usuario_atualizado
+
+
 
 # DELETAR USUÁRIO
 @app.delete('/usuario/{usuario_id}', status_code=status.HTTP_204_NO_CONTENT)
@@ -96,7 +118,19 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
         "token_type": "bearer",
     }
 
+@app.put('/usuario/{usuario_id}/status', status_code=status.HTTP_200_OK)
+def alterar_status_usuario(usuario_id: int, status: bool, session: Session = Depends(get_db)):
+    repo_usuario = RepositorioUsuario(session)
+    usuario_existente = repo_usuario.obter_por_id(usuario_id)
 
+    if usuario_existente is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
+
+    # Atualiza o status do usuário com o novo_status fornecido
+    usuario_existente.status = status  # Alterado de novo_status para status
+    session.commit()
+
+    return {"message": "Status do usuário atualizado com sucesso"}
 
 
 
