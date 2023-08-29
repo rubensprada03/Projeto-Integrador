@@ -34,4 +34,4 @@ usuario comum/estoquista
 }
 
 
-poetry install, para ejetar 
+poetry install, para ejetar

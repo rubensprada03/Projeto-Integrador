@@ -22,11 +22,11 @@ class Usuario(BaseModel):
     # produtos: List[produtos] = []  # Lista opcional de produtos associados ao usuário
 
 class Produto(BaseModel):
-    id: Optional[str] = None  # Campo opcional para o ID do produto
-    nome: str  # Nome do produto (obrigatório)
-    detalhes: str  # Detalhes do produto (obrigatório)
-    preco: float  # Preço do produto (obrigatório)
-    disponivel: bool = False  # Disponibilidade do produto (padrão: False, opcional)
+    id: Optional[str] = None 
+    nome: str  
+    detalhes: str  
+    preco: float  
+    disponivel: bool = False  
 
     class Config:
         orm_mode = True

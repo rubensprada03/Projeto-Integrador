@@ -44,7 +44,6 @@ def listar_usuario(session: Session = Depends(get_db)):
 # EDITAR USUARIO
 import bcrypt
 
-# ... Outras importações e definições ...
 
 @app.put('/usuario/{usuario_id}', status_code=status.HTTP_200_OK)
 def editar_usuario(
@@ -72,7 +71,6 @@ def editar_usuario(
         senha_criptografada = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
         campos_para_atualizar['senha'] = senha_criptografada
 
-        # Lógica de validação de senha
 
     usuario_atualizado = repo_usuario.editar(usuario_existente, campos_para_atualizar)
     return usuario_atualizado

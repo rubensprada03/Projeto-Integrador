@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const userTableContainer = document.getElementById("user-table-container");
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/usuario"); // Substitua pela URL correta
+        const response = await fetch("http://127.0.0.1:8000/usuario");
         const usuarios = await response.json();
 
         const table = document.createElement("table");
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <th>Telefone</th>
                     <th>Grupo</th>
                     <th>CPF</th>
-                    <th>Status</>
+                    <th>Status</th>
                     <th>Editar</th>
                 </tr>
             </thead>
@@ -33,11 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <td>${usuario.status}</td>
                         <td>
                             <button class="edit-button" data-user-id="${usuario.id}" style="cursor: pointer;">Editar</button>
-                            <span style="cursor: pointer;">&#x2716;</span>
-                        </td>
-
-
-                        
+                         </td>
                     </tr>
                 `).join('')}
             </tbody>
@@ -47,12 +43,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
         console.error("Erro ao buscar os usuários:", error);
     }
-    
+
     const userForm = document.getElementById("user-form");
-    
+
     userForm.addEventListener("submit", async event => {
         event.preventDefault();
-        
+
         const nome = document.getElementById("nome").value;
         const cpf = document.getElementById("cpf").value;
         const email = document.getElementById("email").value;
@@ -61,9 +57,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const endereco = document.getElementById("endereco").value;
         const telefone = document.getElementById("telefone").value;
         const grupo = document.getElementById("grupo").value;
-        
+
         // Realize validações e verifique se as senhas coincidem
-        
+
         try {
             const response = await fetch("http://127.0.0.1:8000/usuario", {
                 method: "POST",
@@ -81,9 +77,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     grupo
                 })
             });
-        
+
             const responseData = await response.json();
-        
+
             if (response.ok) {
                 console.log("Novo usuário criado:", responseData);
                 alert("Usuário criado com sucesso!");
@@ -106,13 +102,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.error("Erro ao criar o usuário:", error);
             alert("Erro ao criar o usuário. Por favor, tente novamente mais tarde.");
         }
-        
+
     });
 
-/*     const editButtons = document.querySelectorAll(".edit-button");
+    const editButtons = document.querySelectorAll(".edit-button");
 
     editButtons.forEach(button => {
-        button.addEventListener("click", () => {
+        button.addEventListener("click", async () => {
             const userId = button.getAttribute("data-user-id");
             const row = button.parentNode.parentNode;
             const fields = row.querySelectorAll("td:not(:last-child)");
@@ -124,6 +120,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const confirmarSenha = fields[3].querySelector("input").value;
                 const grupo = fields[5].querySelector("input").value;
 
+                if (senha !== confirmarSenha) {
+                    alert("As senhas não coincidem. Por favor, verifique novamente.");
+                    return;
+                }
+
                 const requestBody = {
                     nome,
                     cpf,
@@ -132,10 +133,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                     grupo
                 };
 
-                // Faça a requisição PUT para atualizar o usuário
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/usuario/${userId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
 
-                button.textContent = "Editar";
-                row.classList.remove("editing");
+                    const responseData = await response.json();
+
+                    if (response.ok) {
+                        console.log("Usuário atualizado:", responseData);
+                        button.textContent = "Editar";
+                        row.classList.remove("editing");
+                    } else {
+                        console.error("Erro ao atualizar o usuário:", responseData);
+                        alert("Erro ao atualizar o usuário. Por favor, tente novamente mais tarde.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao atualizar o usuário:", error);
+                    alert("Erro ao atualizar o usuário. Por favor, tente novamente mais tarde.");
+                }
             } else {
                 row.classList.add("editing");
 
@@ -148,13 +168,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 fields[1].innerHTML = `<input type="text" value="${originalValues.nome}">`;
                 fields[6].innerHTML = `<input type="text" value="${originalValues.cpf}">`;
-                fields[3].innerHTML = `<input type="password" value="${originalValues.endereco}">`;
+                fields[3].innerHTML = `<input type="password" value="${originalValues.senha}">`;
                 fields[5].innerHTML = `<input type="text" value="${originalValues.grupo}">`;
 
                 button.textContent = "Salvar";
+
                 const cancelButton = document.createElement("button");
                 cancelButton.textContent = "Cancelar";
-                cancelButton.classList.add("cancel-button");
+                cancelButton.style.cursor = "pointer";
+                cancelButton.style.marginLeft = "20px";
+                cancelButton.style.marginTop = "7px";
                 cancelButton.addEventListener("click", () => {
                     fields[1].textContent = originalValues.nome;
                     fields[6].textContent = originalValues.cpf;
@@ -163,9 +186,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                     button.textContent = "Editar";
                     row.classList.remove("editing");
+                    row.removeChild(cancelButton);
                 });
-                fields[7].appendChild(cancelButton);
+
+                row.appendChild(cancelButton);
             }
         });
-    }); */
+    });
 });
