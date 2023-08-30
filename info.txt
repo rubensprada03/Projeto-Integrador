@@ -2,36 +2,6 @@ ADMIN_EMAIL = admin@email.com
 ADMIN_SENHA = Bf492*Q31eXm
 ADMIN_ID = 1
 
-
 uvicorn src.server:app --reload
-
--Na criação de um usuario esta cetado para quando criar, o usuario ser um estoquista, tem que colocar "grupo": "admin", para assim ser um adm.
--na crição se o usuario for um estoquistar nao tem problema, nao preciso colocar "grupo", pois o sistema ja entende, ou seja, so coloque se for 
-querer fazer um adm.
-
-{
-    "nome": "admin",
-    "cpf": "44251881877",
-    "email": "admin@email.com",
-    "senha": "Bf492*Q31eXm",
-    "confirmar_senha": "Bf492*Q31eXm",  
-    "endereco": "Rua",
-    "telefone": "123456789",
-    "grupo": "admin"
-}
-
-
-usuario comum/estoquista
-{
-    "nome": "admin",
-    "cpf": "44251881877",
-    "email": "admin@email.com",
-    "senha": "Bf492*Q31eXm",
-    "confirmar_senha": "Bf492*Q31eXm",  
-    "endereco": "Rua",
-    "telefone": "123456789",
-    "grupo": "estoquista"
-}
-
 
 poetry install, para ejetar

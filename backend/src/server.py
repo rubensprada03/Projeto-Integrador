@@ -57,23 +57,17 @@ def editar_usuario(
     if usuario_existente is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
 
-    campos_permitidos = {'nome', 'cpf', 'senha', 'confirmar_senha', 'grupo'}
+    campos_permitidos = {'nome', 'cpf', 'senha', 'grupo', 'status'}
     campos_para_atualizar = {campo: novo_usuario[campo] for campo in campos_permitidos if campo in novo_usuario}
 
-    if 'senha' in campos_para_atualizar or 'confirmar_senha' in campos_para_atualizar:
+    if 'senha' in campos_para_atualizar:
         senha = campos_para_atualizar.get('senha')
-        confirmar_senha = campos_para_atualizar.get('confirmar_senha')
-
-        if senha != confirmar_senha:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas não coincidem")
-
-        # Criptografar a senha antes de armazená-la
         senha_criptografada = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
         campos_para_atualizar['senha'] = senha_criptografada
 
-
     usuario_atualizado = repo_usuario.editar(usuario_existente, campos_para_atualizar)
     return usuario_atualizado
+
 
 
 

@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <th>Email</th>
                     <th>Endereço</th>
                     <th>Telefone</th>
+                    <th>Senha</th>
                     <th>Grupo</th>
                     <th>CPF</th>
                     <th>Status</th>
@@ -28,9 +29,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <td>${usuario.email}</td>
                         <td>${usuario.endereco}</td>
                         <td>${usuario.telefone}</td>
+                        <td>${usuario.senha}</td>
                         <td>${usuario.grupo}</td>
                         <td>${usuario.cpf}</td>
-                        <td>${usuario.status}</td>
+                        <td>${usuario.status ? 'Ativo' : 'Desativado'}</td>
                         <td>
                             <button class="edit-button" data-user-id="${usuario.id}" style="cursor: pointer;">Editar</button>
                          </td>
@@ -56,9 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const confirmarSenha = document.getElementById("confirmar-senha").value;
         const endereco = document.getElementById("endereco").value;
         const telefone = document.getElementById("telefone").value;
-        const grupo = document.getElementById("grupo").value;
-
-        // Realize validações e verifique se as senhas coincidem
+        const grupoCriacao = document.getElementById("grupo-criacao").value;
 
         try {
             const response = await fetch("http://127.0.0.1:8000/usuario", {
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     confirmar_senha: confirmarSenha,
                     endereco,
                     telefone,
-                    grupo
+                    grupo: grupoCriacao
                 })
             });
 
@@ -84,7 +84,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.log("Novo usuário criado:", responseData);
                 alert("Usuário criado com sucesso!");
             } else if (response.status === 400) {
-                // Erro de validação ou dados duplicados
                 if (responseData.detail === "Email já está em uso") {
                     alert("Email já está em uso. Por favor, escolha outro.");
                 } else if (responseData.detail === "Cpf ja em uso") {
@@ -102,7 +101,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.error("Erro ao criar o usuário:", error);
             alert("Erro ao criar o usuário. Por favor, tente novamente mais tarde.");
         }
-
     });
 
     const editButtons = document.querySelectorAll(".edit-button");
@@ -115,22 +113,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (row.classList.contains("editing")) {
                 const nome = fields[1].querySelector("input").value;
-                const cpf = fields[6].querySelector("input").value;
-                const senha = fields[3].querySelector("input").value;
-                const confirmarSenha = fields[3].querySelector("input").value;
-                const grupo = fields[5].querySelector("input").value;
-
-                if (senha !== confirmarSenha) {
-                    alert("As senhas não coincidem. Por favor, verifique novamente.");
-                    return;
-                }
+                const cpf = fields[7].querySelector("input").value;
+                const senha = fields[5].querySelector("input").value;
+                const grupo = fields[6].querySelector("select").value;
+                const status = fields[8].querySelector(".status-select").value;  
 
                 const requestBody = {
                     nome,
                     cpf,
                     senha,
-                    confirmar_senha: confirmarSenha,
-                    grupo
+                    grupo, 
+                    status
                 };
 
                 try {
@@ -156,20 +149,37 @@ document.addEventListener("DOMContentLoaded", async () => {
                     console.error("Erro ao atualizar o usuário:", error);
                     alert("Erro ao atualizar o usuário. Por favor, tente novamente mais tarde.");
                 }
+                
             } else {
                 row.classList.add("editing");
 
                 const originalValues = {
                     nome: fields[1].textContent,
-                    cpf: fields[6].textContent,
-                    senha: fields[3].textContent,
-                    grupo: fields[5].textContent
+                    cpf: fields[7].textContent,
+                    senha: fields[5].textContent,
+                    grupo: fields[6].textContent,
+                    status: fields[8].textContent
                 };
 
                 fields[1].innerHTML = `<input type="text" value="${originalValues.nome}">`;
-                fields[6].innerHTML = `<input type="text" value="${originalValues.cpf}">`;
-                fields[3].innerHTML = `<input type="password" value="${originalValues.senha}">`;
-                fields[5].innerHTML = `<input type="text" value="${originalValues.grupo}">`;
+                fields[7].innerHTML = `<input type="text" value="${originalValues.cpf}">`;
+                fields[5].innerHTML = `<input type="password" value="${originalValues.senha}">`;
+
+                const grupoSelect = document.createElement("select");
+                grupoSelect.innerHTML = `
+                    <option value="estoquista" ${originalValues.grupo === 'estoquista' ? 'selected' : ''}>estoquista</option>
+                    <option value="admin" ${originalValues.grupo === 'admin' ? 'selected' : ''}>admin</option>
+                `;
+                fields[6].innerHTML = '';
+                fields[6].appendChild(grupoSelect);
+
+                const statusSelect = document.createElement("select");
+                statusSelect.innerHTML = `
+                    <option value="ativo" ${originalValues.status === 'Ativo' ? 'selected' : ''}>Ativo</option>
+                    <option value="desativado" ${originalValues.status === 'Desativado' ? 'selected' : ''}>Desativado</option>
+                `;
+                fields[8].innerHTML = '';
+                fields[8].appendChild(statusSelect);
 
                 button.textContent = "Salvar";
 
@@ -178,11 +188,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 cancelButton.style.cursor = "pointer";
                 cancelButton.style.marginLeft = "20px";
                 cancelButton.style.marginTop = "7px";
+                cancelButton.style.color = "red";
                 cancelButton.addEventListener("click", () => {
-                    fields[1].textContent = originalValues.nome;
-                    fields[6].textContent = originalValues.cpf;
-                    fields[3].textContent = originalValues.senha;
-                    fields[5].textContent = originalValues.grupo;
+                    fields[1].innerHTML = originalValues.nome;
+                    fields[7].innerHTML = originalValues.cpf;
+                    fields[5].innerHTML = originalValues.senha;
+                    fields[6].innerHTML = originalValues.grupo;
+                    fields[8].innerHTML = originalValues.status;        
 
                     button.textContent = "Editar";
                     row.classList.remove("editing");
