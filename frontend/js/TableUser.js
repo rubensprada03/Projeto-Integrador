@@ -129,12 +129,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const editButtons = document.querySelectorAll(".edit-button");
 
+        // SELECIONA TODOS OS BOTOES DE EDIÇÃO
         editButtons.forEach(button => {
             button.addEventListener("click", async () => {
                 const userId = button.getAttribute("data-user-id");
                 const row = button.parentNode.parentNode;
                 const fields = row.querySelectorAll("td:not(:last-child)");
 
+                // PEGA OS CAMPOS EM QUE PODE SER ALTERADO
                 if (row.classList.contains("editing")) {
                     const nome = fields[1].querySelector("input").value;
                     const cpf = fields[7].querySelector("input").value;
@@ -142,6 +144,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const grupo = fields[6].querySelector("select").value;
                     const status = fields[8].querySelector(".status-select").value === 'ativo';
 
+                    // CRIA O CORPO DA REQUISIÇÃO
                     const requestBody = {
                         nome,
                         cpf,
@@ -150,6 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         status,
                     };
 
+                    // CHAMADA PARA API
                     try {
                         const response = await fetch(`http://127.0.0.1:8000/usuario/${userId}`, {
                             method: "PUT",
@@ -177,6 +181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 } else {
                     row.classList.add("editing");
 
+                    // SETAR PARA OS VALORES ORIGINAIS
                     const originalValues = {
                         nome: fields[1].textContent,
                         cpf: fields[7].textContent,
@@ -185,6 +190,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         status: fields[8].textContent
                     };
 
+                    // SUBSTITUIR OS CAMPOS DE EDIÇÃO
                     fields[1].innerHTML = '<input type="text" value="' + originalValues.nome + '">';
                     fields[7].innerHTML = '<input type="text" value="' + originalValues.cpf + '">';
                     fields[5].innerHTML = '<input type="password" value="' + originalValues.senha + '">';
@@ -206,14 +212,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                     fields[8].innerHTML = '';
                     fields[8].appendChild(statusSelect);
 
+                    // MUDA  O TEXTO "EDITAR" PARA "SALVAR" E AINDA VAI ADICIONAR O BOTAO CANCELAR 
                     button.textContent = "Salvar";
-
                     const cancelButton = document.createElement("button");
                     cancelButton.textContent = "Cancelar";
                     cancelButton.style.cursor = "pointer";
                     cancelButton.style.marginLeft = "20px";
                     cancelButton.style.marginTop = "7px";
                     cancelButton.style.color = "red";
+
+                    // EVENTO DE CLICK PARA CANCELAR EDIÇÃO E SETAR PARA OS VALORES ORIGINAIS
                     cancelButton.addEventListener("click", () => {
                         fields[1].innerHTML = originalValues.nome;
                         fields[7].innerHTML = originalValues.cpf;
