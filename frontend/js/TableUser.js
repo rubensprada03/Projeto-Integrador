@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <td>${usuario.status ? 'Ativo' : 'Desativado'}</td>
                         <td>
                             <button class="edit-button" data-user-id="${usuario.id}" style="cursor: pointer;">Editar</button>
-                         </td>
+                        </td>
                     </tr>
                 `).join('')}
             </tbody>
@@ -116,14 +116,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const cpf = fields[7].querySelector("input").value;
                 const senha = fields[5].querySelector("input").value;
                 const grupo = fields[6].querySelector("select").value;
-                const status = fields[8].querySelector(".status-select").value;  
+                const status = fields[8].querySelector(".status-select").value === 'ativo';
 
                 const requestBody = {
                     nome,
                     cpf,
                     senha,
                     grupo, 
-                    status
+                    status,
                 };
 
                 try {
@@ -161,9 +161,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     status: fields[8].textContent
                 };
 
-                fields[1].innerHTML = `<input type="text" value="${originalValues.nome}">`;
-                fields[7].innerHTML = `<input type="text" value="${originalValues.cpf}">`;
-                fields[5].innerHTML = `<input type="password" value="${originalValues.senha}">`;
+                fields[1].innerHTML = '<input type="text" value="' + originalValues.nome + '">';
+                fields[7].innerHTML = '<input type="text" value="' + originalValues.cpf + '">';
+                fields[5].innerHTML = '<input type="password" value="' + originalValues.senha + '">';
 
                 const grupoSelect = document.createElement("select");
                 grupoSelect.innerHTML = `
@@ -174,6 +174,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 fields[6].appendChild(grupoSelect);
 
                 const statusSelect = document.createElement("select");
+                statusSelect.classList.add("status-select"); 
                 statusSelect.innerHTML = `
                     <option value="ativo" ${originalValues.status === 'Ativo' ? 'selected' : ''}>Ativo</option>
                     <option value="desativado" ${originalValues.status === 'Desativado' ? 'selected' : ''}>Desativado</option>
