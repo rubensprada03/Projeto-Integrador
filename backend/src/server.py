@@ -96,19 +96,26 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
     
     if not user:
         raise HTTPException(status_code=403,
-                            detail="Email ou senha incorretos"
+                            detail="Usuário não autorizado"
+                           )
+    
+    if not user.status:  # Verifica se o status é False (usuário desativado)
+        raise HTTPException(status_code=403,
+                            detail="Usuário não autorizado"
                            )
 
     # Verifica se o grupo do usuário é igual a "admin"
-    if user.grupo != "admin":
-        raise HTTPException(status_code=403,
-                            detail="Acesso não autorizado"
-                           )
+    if user.grupo == "admin":
+        if not user.status:  # Verifica se o status é False (usuário desativado)
+            raise HTTPException(status_code=403,
+                                detail="Usuário não autorizado"
+                               )
     
     return {
         "access_token": criar_token_jwt(user.id),
         "token_type": "bearer",
     }
+
 
 @app.put('/usuario/{usuario_id}/status', status_code=status.HTTP_200_OK)
 def alterar_status_usuario(usuario_id: int, status: bool, session: Session = Depends(get_db)):
