@@ -45,6 +45,7 @@ def listar_usuario(session: Session = Depends(get_db)):
 import bcrypt
 
 
+# Editar usuarios
 @app.put('/usuario/{usuario_id}', status_code=status.HTTP_200_OK)
 def editar_usuario(
     usuario_id: int,
@@ -116,7 +117,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
         "token_type": "bearer",
     }
 
-
+# Editar status
 @app.put('/usuario/{usuario_id}/status', status_code=status.HTTP_200_OK)
 def alterar_status_usuario(usuario_id: int, status: bool, session: Session = Depends(get_db)):
     repo_usuario = RepositorioUsuario(session)

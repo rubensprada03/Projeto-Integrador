@@ -1,3 +1,5 @@
+# https://fastapi.tiangolo.com/ - documentação 
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from src.schemas import schemas
@@ -91,4 +93,5 @@ class RepositorioUsuario():
     def desativar_usuario(self, usuario: models.Usuario):
         usuario.status = False
         self.session.commit()
+
 

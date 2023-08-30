@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const userTableContainer = document.getElementById("user-table-container");
 
+    // EXIBIR TABELA
+
     try {
         const response = await fetch("http://127.0.0.1:8000/usuario");
         const usuarios = await response.json();
@@ -45,6 +47,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             userTableContainer.appendChild(table);
         }
 
+        // BUSCA DE USUARIOS
+
         populateTable(usuarios);
 
         const searchInput = document.getElementById("search");
@@ -61,6 +65,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             
             populateTable(filteredUsers);
         });
+
+        // FORMULARIO DE CRIAÇÃO
 
         const userForm = document.getElementById("user-form");
 
@@ -118,6 +124,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert("Erro ao criar o usuário. Por favor, tente novamente mais tarde.");
             }
         });
+
+        // EDIÇÃO DE CAMPOS
 
         const editButtons = document.querySelectorAll(".edit-button");
 

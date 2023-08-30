@@ -1,3 +1,5 @@
+// SISTEMA DE LOGIN
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("login-form");
     const errorElement = document.getElementById("error-message");
