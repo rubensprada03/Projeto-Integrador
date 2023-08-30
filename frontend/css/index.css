@@ -1,6 +1,6 @@
 /* Estilos para a tabela */
 table {
-    width: 80%;
+    width: 100%;
     border-collapse: collapse;
     border: 1px solid #ddd;
 }
@@ -112,4 +112,45 @@ tbody tr:hover {
     font-size: 14px;
     margin: 2px;
     cursor: pointer;
+}
+
+#open-modal-button {
+    background-color: #007bff; 
+    color: white; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s; 
+    margin-top: 20px;
+}
+
+#open-modal-button:hover {
+    background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+}
+
+#search-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#search {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+#search-button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+#search-button:hover {
+    background-color: #45a049;
 }
