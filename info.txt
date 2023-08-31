@@ -1,5 +1,5 @@
 ADMIN_EMAIL = admin@email.com
-ADMIN_SENHA = Bf492*Q31eXm
+ADMIN_SENHA = senha
 ADMIN_ID = 1
 
 uvicorn src.server:app --reload

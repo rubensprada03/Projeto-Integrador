@@ -104,7 +104,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
         raise HTTPException(status_code=403,
                             detail="Usuário não autorizado"
                            )
-
+    
     # Verifica se o grupo do usuário é igual a "admin"
     if user.grupo == "admin":
         if not user.status:  # Verifica se o status é False (usuário desativado)
@@ -112,10 +112,17 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
                                 detail="Usuário não autorizado"
                                )
     
+    if user.id == 1:
+        return {
+            "access_token": criar_token_jwt(user.id),
+            "token_type": "bearer",
+        }
+    
     return {
         "access_token": criar_token_jwt(user.id),
         "token_type": "bearer",
     }
+
 
 # Editar status
 @app.put('/usuario/{usuario_id}/status', status_code=status.HTTP_200_OK)
