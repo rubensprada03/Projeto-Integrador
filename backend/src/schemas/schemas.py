@@ -21,12 +21,21 @@ class Usuario(BaseModel):
         return cpf
     # produtos: List[produtos] = []  # Lista opcional de produtos associados ao usuário
 
-class Produto(BaseModel):
-    id: Optional[str] = None 
-    nome: str  
-    detalhes: str  
-    preco: float  
-    disponivel: bool = False  
+class ProdutoBase(BaseModel):
+    nome: str
+    avaliacao: float
+    descricao_detalhada: str
+    preco: float
+    qtd_estoque: int
+
+    @validator('avaliacao')
+    def validate_avaliacao(cls, value):
+        if not (1 <= value <= 5) or value % 0.5 != 0:
+            raise ValueError('Avaliação deve estar entre 1 e 5 com precisão de 0,5')
+        return value
+    
+class Produto(ProdutoBase):
+    id: int
 
     class Config:
         orm_mode = True

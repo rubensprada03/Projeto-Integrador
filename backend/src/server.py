@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, status, HTTPException, Response
+from fastapi import FastAPI, Depends, status, HTTPException, Response, File, UploadFile
+import uuid
 from sqlalchemy.orm import Session
 from src.schemas.schemas import Produto, Usuario
 from src.schemas import schemas
@@ -138,9 +139,48 @@ def alterar_status_usuario(usuario_id: int, status: bool, session: Session = Dep
     session.commit()
 
     return {"message": "Status do usuário atualizado com sucesso"}
+ 
+
+# ROTAS DE PRODUTOS=>
+
+# Criar usuario
+@app.post("/produtos/", response_model=Produto, status_code=status.HTTP_201_CREATED)
+def create_produto(produto: Produto, db: Session = Depends(get_db)):
+    repo = RepositorioProduto(db)
+    return repo.criar(produto)
+
+# Listar usuario
+@app.get('/produtos/', status_code=status.HTTP_200_OK)
+def listar_produto(session: Session = Depends(get_db)):
+    produto = RepositorioProduto(session).listar()
+    return produto
+
+# DELETAR USUÁRIO
+@app.delete('/produtos/{produto_id}', status_code=status.HTTP_204_NO_CONTENT)
+def excluir_produto(produto_id: int, session: Session = Depends(get_db)):
+    repo_produto = RepositorioProduto(session)
+    produto_existente = repo_produto.obter_por_id(produto_id)
+
+    if produto_existente is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+
+    repo_produto.excluir(produto_existente)
+    response = Response(status_code=status.HTTP_204_NO_CONTENT)
+    response.headers["X-Message"] = "produto excluído com sucesso."
+    return response
 
 
 
+IMAGEDIR = "src/imagesProd/"
 
+@app.post('/upload')
+async def create_upload_file(file: UploadFile = File(...)):
 
+    file.filename = f"{uuid.uuid4()}.jpg"
+    contents = await file.read()
 
+    #salvar arquivo
+    with open (f"{IMAGEDIR}{file.filename}", "wb") as f:
+        f.write(contents)
+
+    return {"filename": file.filename}

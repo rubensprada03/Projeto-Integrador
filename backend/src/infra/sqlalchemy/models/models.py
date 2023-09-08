@@ -18,11 +18,10 @@ class Usuario(Base):
 class Produto(Base):
 
     __tablename__ = 'produto'
-    
+        
     id = Column(Integer, primary_key=True, index=True)
-    nome = Column(String)
-    detalhes = Column(String)
-    categoria = Column(String)
-    preco = Column(Float)
-    disponivel = Column(Boolean)
-    #usuario_id = Column(Integer, ForeignKey('usuario.id)) LINK: https://www.youtube.com/watch?v=CIV9Oyx-yjk&t=310s MINUTO: 6
+    nome = Column(String(length=200))  # Nome do produto com no máximo 200 caracteres
+    avaliacao = Column(Float(precision=1))  # Avaliação de 1 a 5 com precisão de 0,5
+    descricao_detalhada = Column(String(length=2000))  # Descrição detalhada com no máximo 2000 caracteres
+    preco = Column(Float(precision=2))  # Preço do produto com duas casas decimais
+    qtd_estoque = Column(Integer) 
