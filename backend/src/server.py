@@ -1,4 +1,7 @@
 from fastapi import FastAPI, Depends, status, HTTPException, Response, File, UploadFile
+from fastapi.responses import FileResponse
+import os
+from fastapi import HTTPException
 import uuid
 from sqlalchemy.orm import Session
 from src.schemas.schemas import Produto, Usuario
@@ -143,19 +146,19 @@ def alterar_status_usuario(usuario_id: int, status: bool, session: Session = Dep
 
 # ROTAS DE PRODUTOS=>
 
-# Criar usuario
+# Criar produto
 @app.post("/produtos/", response_model=Produto, status_code=status.HTTP_201_CREATED)
 def create_produto(produto: Produto, db: Session = Depends(get_db)):
     repo = RepositorioProduto(db)
     return repo.criar(produto)
 
-# Listar usuario
+# Listar produto
 @app.get('/produtos/', status_code=status.HTTP_200_OK)
 def listar_produto(session: Session = Depends(get_db)):
     produto = RepositorioProduto(session).listar()
     return produto
 
-# DELETAR USUÁRIO
+# DELETAR produto
 @app.delete('/produtos/{produto_id}', status_code=status.HTTP_204_NO_CONTENT)
 def excluir_produto(produto_id: int, session: Session = Depends(get_db)):
     repo_produto = RepositorioProduto(session)
@@ -173,14 +176,62 @@ def excluir_produto(produto_id: int, session: Session = Depends(get_db)):
 
 IMAGEDIR = "src/imagesProd/"
 
-@app.post('/upload')
-async def create_upload_file(file: UploadFile = File(...)):
+@app.post("/upload/{produto_id}", response_model=Produto, status_code=status.HTTP_201_CREATED)
+async def create_upload_file(produto_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
+    # Verifique se o produto com o ID especificado existe
+    repo_produto = RepositorioProduto(db)
+    produto = repo_produto.obter_por_id(produto_id)
+    
+    if not produto:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
 
+    # Faça o upload do arquivo de imagem e obtenha a URL
     file.filename = f"{uuid.uuid4()}.jpg"
     contents = await file.read()
 
-    #salvar arquivo
-    with open (f"{IMAGEDIR}{file.filename}", "wb") as f:
+    # Salvar arquivo
+    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
         f.write(contents)
 
-    return {"filename": file.filename}
+    # Adicione a URL da imagem ao campo 'imagens' do produto
+    if produto.imagens:
+        produto.imagens += f", {IMAGEDIR}{file.filename}"
+    else:
+        produto.imagens = f"{IMAGEDIR}{file.filename}"
+
+    # Atualize o produto no banco de dados
+    db.commit()
+    db.refresh(produto)
+
+    return produto
+
+
+
+
+# Rota para obter a imagem de um produto por ID
+@app.get("/produtos/{produto_id}/imagem", response_class=FileResponse)
+def get_produto_image(produto_id: int, db: Session = Depends(get_db)):
+    repo_produto = RepositorioProduto(db)
+    produto = repo_produto.obter_por_id(produto_id)
+    
+    if not produto:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+
+    # Verifique se há uma imagem associada ao produto
+    if not produto.imagens:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Imagem não encontrada para este produto")
+
+    # O caminho da imagem está armazenado em 'produto.imagens', você pode recuperá-lo e retornar a imagem
+    image_path = produto.imagens
+
+    # Certifique-se de que o caminho da imagem existe
+    if not os.path.exists(image_path):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Arquivo de imagem não encontrado")
+
+    # Defina o cabeçalho Content-Disposition para que o navegador exiba a imagem ao invés de fazer o download
+    headers = {
+        "Content-Disposition": f"inline; filename={os.path.basename(image_path)}"
+    }
+
+    # Retorne a imagem como resposta
+    return FileResponse(image_path, headers=headers, media_type="image/jpeg")

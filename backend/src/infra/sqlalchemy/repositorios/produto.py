@@ -30,3 +30,10 @@ class RepositorioProduto():
 
     def obter_por_id(self, produto_id: int):
         return self.db.query(models.Produto).filter(models.Produto.id == produto_id).first()
+
+    def associar_imagem_a_produto(self, produto: models.Produto, imagem_url: str):
+        # Adicione a URL da imagem ao produto
+        produto.imagens.append(imagem_url)
+        self.db.commit()
+        self.db.refresh(produto)
+        return produto

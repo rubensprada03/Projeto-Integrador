@@ -25,3 +25,4 @@ class Produto(Base):
     descricao_detalhada = Column(String(length=2000))  # Descrição detalhada com no máximo 2000 caracteres
     preco = Column(Float(precision=2))  # Preço do produto com duas casas decimais
     qtd_estoque = Column(Integer) 
+    imagens = Column(String)
