@@ -27,6 +27,7 @@ class ProdutoBase(BaseModel):
     descricao_detalhada: str
     preco: float
     qtd_estoque: int
+    imagens: List[str] = []
 
     @validator('avaliacao')
     def validate_avaliacao(cls, value):
@@ -34,8 +35,17 @@ class ProdutoBase(BaseModel):
             raise ValueError('Avaliação deve estar entre 1 e 5 com precisão de 0,5')
         return value
     
-class Produto(ProdutoBase):
-    id: int
+class Produto(BaseModel):
+    nome: str
+    avaliacao: float
+    descricao_detalhada: str
+    preco: float
+    qtd_estoque: int
+    imagens: List[str] = []  # Defina como uma lista vazia por padrão
 
-    class Config:
-        orm_mode = True
+class ProdutoSimples(BaseModel):
+    nome: str
+    avaliacao: float
+    descricao_detalhada: str
+    preco: float
+    qtd_estoque: int

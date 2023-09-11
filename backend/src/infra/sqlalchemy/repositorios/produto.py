@@ -37,3 +37,5 @@ class RepositorioProduto():
         self.db.commit()
         self.db.refresh(produto)
         return produto
+    
+    
