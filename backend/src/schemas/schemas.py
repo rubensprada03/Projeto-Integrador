@@ -27,6 +27,7 @@ class ProdutoBase(BaseModel):
     descricao_detalhada: str
     preco: float
     qtd_estoque: int
+    status: bool = True
     imagens: List[str] = []
 
     @validator('avaliacao')
@@ -41,9 +42,18 @@ class Produto(BaseModel):
     descricao_detalhada: str
     preco: float
     qtd_estoque: int
+    status: bool = True
     imagens: List[str] = []  # Defina como uma lista vazia por padrão
 
 class ProdutoSimples(BaseModel):
+    nome: str
+    avaliacao: float
+    descricao_detalhada: str
+    preco: float
+    qtd_estoque: int
+    status: bool = True
+
+class ProdutoEdit(BaseModel):
     nome: str
     avaliacao: float
     descricao_detalhada: str

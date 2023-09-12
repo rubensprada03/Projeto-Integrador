@@ -153,7 +153,7 @@ def create_produto(produto: Produto, db: Session = Depends(get_db)):
     return repo.criar(produto) """
 
 
-
+IMAGEDIR = "src/imagesProd/"
 
 @app.post("/produtos/", status_code=status.HTTP_201_CREATED, tags=['Produto'])
 async def create_produto_with_images(
@@ -162,6 +162,7 @@ async def create_produto_with_images(
     descricao_detalhada: str = Form(...),
     preco: float = Form(...),
     qtd_estoque: int = Form(...),
+    status: bool = Form(...),
     files: List[UploadFile] = File(...),
     db: Session = Depends(get_db)
 ):
@@ -171,7 +172,8 @@ async def create_produto_with_images(
         avaliacao=avaliacao,
         descricao_detalhada=descricao_detalhada,
         preco=preco,
-        qtd_estoque=qtd_estoque
+        qtd_estoque=qtd_estoque,
+        status=status
     )
     repo_produto = RepositorioProduto(db)
     db_produto = repo_produto.criar(produto)
@@ -206,8 +208,20 @@ async def create_produto_with_images(
 # Listar produto
 @app.get('/produtos/', status_code=status.HTTP_200_OK, tags=['Produto'])
 def listar_produto(session: Session = Depends(get_db)):
-    produto = RepositorioProduto(session).listar()
-    return produto
+    produtos = RepositorioProduto(session).listar()
+    produtos_com_imagens = []
+
+    for produto in produtos:
+        if produto.imagens:
+            imagens = [f"/imageProd/{imagem.strip()}" for imagem in produto.imagens.split(',')]
+            produto_dict = produto.__dict__
+            produto_dict['imagens'] = imagens
+            produtos_com_imagens.append(produto_dict)
+        else:
+            produtos_com_imagens.append(produto.__dict__)
+
+    return produtos_com_imagens
+
 
 # DELETAR produto
 @app.delete('/produtos/{produto_id}', status_code=status.HTTP_204_NO_CONTENT, tags=['Produto'])
@@ -224,48 +238,11 @@ def excluir_produto(produto_id: int, session: Session = Depends(get_db)):
     return response
 
 
-
-IMAGEDIR = "src/imagesProd/"
-
-@app.post("/upload/{produto_id}", status_code=status.HTTP_201_CREATED, tags=['Produto'])
-async def create_upload_files(produto_id: int, files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
-    # Verifique se o produto com o ID especificado existe
-    repo_produto = RepositorioProduto(db)
-    produto = repo_produto.obter_por_id(produto_id)
-    
-    if not produto:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
-
-    # Para cada arquivo de imagem, faça o upload e adicione o nome do arquivo à lista
-    image_urls = []
-
-    for file in files:
-        file.filename = f"{uuid.uuid4()}.jpg"
-        contents = await file.read()
-
-        # Salvar o arquivo
-        with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
-            f.write(contents)
-
-        image_urls.append(f"{IMAGEDIR}{file.filename}")
-
-    # Adicione as URLs das imagens ao campo 'imagens' do produto
-    if produto.imagens:
-        produto.imagens += ", " + ", ".join(image_urls)
-    else:
-        produto.imagens = ", ".join(image_urls)
-
-    # Atualize o produto no banco de dados
-    db.commit()
-    db.refresh(produto)
-
-    return produto
-
 @app.get("/produtos/{produto_id}/imagem", response_class=JSONResponse, tags=['Produto'])
 def get_produto_image(produto_id: int, db: Session = Depends(get_db)):
     repo_produto = RepositorioProduto(db)
     produto = repo_produto.obter_por_id(produto_id)
-    
+ 
     if not produto:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
 
@@ -286,14 +263,14 @@ def get_produto_image(produto_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Arquivos de imagem não encontrados")
 
     # Retorne todas as URLs das imagens como resposta
-    return JSONResponse(content={"image_urls": existing_image_urls})    
+    return JSONResponse(content={"image_urls": existing_image_urls})
 
 # Editar produto
 
 @app.put("/produtos/{produto_id}/", status_code=status.HTTP_200_OK, tags=['Produto'])
 async def update_produto(
     produto_id: int,
-    produto_data: ProdutoSimples,  # Aceita atributos do produto em JSON
+    produto_data: ProdutoEdit,  # Aceita atributos do produto em JSON
     db: Session = Depends(get_db)
 ):
     # Verifique se o produto com o ID especificado existe
@@ -345,3 +322,34 @@ async def update_produto_image(
 
     return db_produto
     
+
+
+
+@app.put('/produto/ativar/{produto_id}', status_code=status.HTTP_200_OK, tags=['Produto'])
+def ativar_produto(produto_id: int, session: Session = Depends(get_db)):
+    repo_produto = RepositorioProduto(session)
+    produto_existente = repo_produto.obter_por_id(produto_id)
+
+    if produto_existente is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+
+    # Ativa o produto
+    produto_existente.status = True
+    session.commit()
+
+    return {"message": "Produto ativado com sucesso"}
+
+
+@app.put('/produto/desativar/{produto_id}', status_code=status.HTTP_200_OK, tags=['Produto'])
+def desativar_produto(produto_id: int, session: Session = Depends(get_db)):
+    repo_produto = RepositorioProduto(session)
+    produto_existente = repo_produto.obter_por_id(produto_id)
+
+    if produto_existente is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+
+    # Desativa o produto
+    produto_existente.status = False
+    session.commit()
+
+    return {"message": "Produto desativado com sucesso"}

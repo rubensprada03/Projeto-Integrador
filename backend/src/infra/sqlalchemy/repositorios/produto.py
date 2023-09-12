@@ -13,6 +13,7 @@ class RepositorioProduto():
             avaliacao=produto.avaliacao,
             descricao_detalhada=produto.descricao_detalhada,
             preco=produto.preco,
+            status=produto.status,
             qtd_estoque=produto.qtd_estoque
         )
         self.db.add(db_produto)
@@ -38,4 +39,11 @@ class RepositorioProduto():
         self.db.refresh(produto)
         return produto
     
+    def ativar_produto(self, produto: models.Produto):
+        produto.status = True
+        self.session.commit()
+
+    def desativar_produto(self, produto: models.Produto):
+        produto.status = False
+        self.session.commit()
     
