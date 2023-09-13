@@ -38,7 +38,7 @@ app.add_middleware(
 @app.post('/usuario', status_code=status.HTTP_201_CREATED, tags=['Usuário'])
 def criar_usuario(usuario: Usuario, session: Session = Depends(get_db)):
     if usuario.senha != usuario.confirmar_senha:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas não coincidem")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas não coincidem.")
 
     repo_usuario = RepositorioUsuario(session)
     usuario_criado = repo_usuario.criar(usuario)
@@ -65,7 +65,7 @@ def editar_usuario(
     usuario_existente = repo_usuario.obter_por_id(usuario_id)
 
     if usuario_existente is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado.")
 
     campos_permitidos = {'nome', 'cpf', 'senha', 'grupo', 'status'}
     campos_para_atualizar = {campo: novo_usuario[campo] for campo in campos_permitidos if campo in novo_usuario}
@@ -88,7 +88,7 @@ def excluir_usuario(usuario_id: int, session: Session = Depends(get_db)):
     usuario_existente = repo_usuario.obter_por_id(usuario_id)
 
     if usuario_existente is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado.")
 
     repo_usuario.excluir(usuario_existente)
     response = Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -106,19 +106,19 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
     
     if not user:
         raise HTTPException(status_code=403,
-                            detail="Usuário não autorizado"
+                            detail="Usuário não autorizado."
                            )
     
     if not user.status:  # Verifica se o status é False (usuário desativado)
         raise HTTPException(status_code=403,
-                            detail="Usuário não autorizado"
+                            detail="Usuário não autorizado."
                            )
     
     # Verifica se o grupo do usuário é igual a "admin"
     if user.grupo == "admin":
         if not user.status:  # Verifica se o status é False (usuário desativado)
             raise HTTPException(status_code=403,
-                                detail="Usuário não autorizado"
+                                detail="Usuário não autorizado."
                                )
     
     if user.id == 1:
@@ -140,7 +140,7 @@ def alterar_status_usuario(usuario_id: int, status: bool, session: Session = Dep
     usuario_existente = repo_usuario.obter_por_id(usuario_id)
 
     if usuario_existente is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado.")
 
     # Atualiza o status do usuário com o novo_status fornecido
     usuario_existente.status = status  # Alterado de novo_status para status
@@ -234,11 +234,11 @@ def excluir_produto(produto_id: int, session: Session = Depends(get_db)):
     produto_existente = repo_produto.obter_por_id(produto_id)
 
     if produto_existente is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado.")
 
     repo_produto.excluir(produto_existente)
     response = Response(status_code=status.HTTP_204_NO_CONTENT)
-    response.headers["X-Message"] = "produto excluído com sucesso."
+    response.headers["X-Message"] = "Produto excluído com sucesso."
     return response
 
 
@@ -248,11 +248,11 @@ def get_produto_image(produto_id: int, db: Session = Depends(get_db)):
     produto = repo_produto.obter_por_id(produto_id)
  
     if not produto:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado.")
 
     # Verifique se há imagens associadas ao produto
     if not produto.imagens:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Imagens não encontradas para este produto")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Imagens não encontradas para este produto.")
 
     # Separe as URLs das imagens
     image_urls = [url.strip() for url in produto.imagens.split(',')]
@@ -264,7 +264,7 @@ def get_produto_image(produto_id: int, db: Session = Depends(get_db)):
             existing_image_urls.append(image_url)
 
     if not existing_image_urls:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Arquivos de imagem não encontrados")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Arquivos de imagem não encontrados.")
 
     # Retorne todas as URLs das imagens como resposta
     return JSONResponse(content={"image_urls": existing_image_urls})
@@ -281,7 +281,7 @@ async def update_produto(
     db_produto = repo_produto.obter_por_id(produto_id)
 
     if not db_produto:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado.")
 
     # Atualize os atributos do produto com os dados fornecidos em JSON
     for attr, value in produto_data.dict().items():
@@ -306,7 +306,7 @@ async def update_produto_image(
     db_produto = repo_produto.obter_por_id(produto_id)
 
     if not db_produto:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado.")
 
     # Crie um novo nome de arquivo único
     new_filename = f"{uuid.uuid4()}.jpg"
@@ -334,13 +334,13 @@ def ativar_produto(produto_id: int, session: Session = Depends(get_db)):
     produto_existente = repo_produto.obter_por_id(produto_id)
 
     if produto_existente is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado.")
 
     # Ativa o produto
     produto_existente.status = True
     session.commit()
 
-    return {"message": "Produto ativado com sucesso"}
+    return {"message": "Produto ativado com sucesso!"}
 
 
 @app.put('/produto/desativar/{produto_id}', status_code=status.HTTP_200_OK, tags=['Produto'])
@@ -349,7 +349,7 @@ def desativar_produto(produto_id: int, session: Session = Depends(get_db)):
     produto_existente = repo_produto.obter_por_id(produto_id)
 
     if produto_existente is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado.")
 
     # Desativa o produto
     produto_existente.status = False
