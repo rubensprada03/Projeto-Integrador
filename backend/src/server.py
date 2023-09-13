@@ -295,10 +295,15 @@ async def update_produto(
 
 
 
+
+from typing import List
+
+from typing import List
+
 @app.patch("/produtos/{produto_id}/imagem/", status_code=status.HTTP_200_OK, tags=['Produto'])
-async def update_produto_image(
+async def update_produto_images(
     produto_id: int,
-    file: UploadFile = File(...),
+    files: List[UploadFile] = File(...),
     db: Session = Depends(get_db)
 ):
     # Verifique se o produto com o ID especificado existe
@@ -308,22 +313,30 @@ async def update_produto_image(
     if not db_produto:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
 
-    # Crie um novo nome de arquivo único
-    new_filename = f"{uuid.uuid4()}.jpg"
+    # Processar e salvar cada arquivo
+    imagens = db_produto.imagens.split(',') if db_produto.imagens else []
 
-    # Salve o arquivo com o novo nome
-    contents = await file.read()
-    with open(os.path.join(IMAGEDIR, new_filename), "wb") as f:
-        f.write(contents)
+    for file in files:
+        new_filename = f"{uuid.uuid4()}.jpg"
+        
+        contents = await file.read()
+        with open(os.path.join(IMAGEDIR, new_filename), "wb") as f:
+            f.write(contents)
 
-    # Atualize a URL da imagem no produto
-    db_produto.imagens = os.path.join(IMAGEDIR, new_filename)
+        # Adicionar a URL da imagem à lista de imagens
+        imagens.append(os.path.join(IMAGEDIR, new_filename))
+
+    # Atualize a coluna 'imagens' no banco de dados com as URLs das imagens separadas por vírgula
+    db_produto.imagens = ','.join(imagens)
 
     # Atualize o produto no banco de dados
     db.commit()
     db.refresh(db_produto)
 
     return db_produto
+
+
+
     
 
 
