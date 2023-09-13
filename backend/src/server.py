@@ -12,9 +12,14 @@ from src.infra.sqlalchemy.repositorios.repositorio_usuario import RepositorioUsu
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from src.security import verify_password, criar_token_jwt
+from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI()
+
+IMAGEDIR = "src/imagesProd/"
+
+app.mount("/imagesProd", StaticFiles(directory=IMAGEDIR), name="images")
 
 # Configurar origens permitidas (substitua * pelo seu domínio front-end)
 origins = ["*"]
@@ -153,7 +158,6 @@ def create_produto(produto: Produto, db: Session = Depends(get_db)):
     return repo.criar(produto) """
 
 
-IMAGEDIR = "src/imagesProd/"
 
 @app.post("/produtos/", status_code=status.HTTP_201_CREATED, tags=['Produto'])
 async def create_produto_with_images(
@@ -213,7 +217,7 @@ def listar_produto(session: Session = Depends(get_db)):
 
     for produto in produtos:
         if produto.imagens:
-            imagens = [f"/imageProd/{imagem.strip()}" for imagem in produto.imagens.split(',')]
+            imagens = [f"{imagem.strip()}" for imagem in produto.imagens.split(',')]
             produto_dict = produto.__dict__
             produto_dict['imagens'] = imagens
             produtos_com_imagens.append(produto_dict)
@@ -266,7 +270,6 @@ def get_produto_image(produto_id: int, db: Session = Depends(get_db)):
     return JSONResponse(content={"image_urls": existing_image_urls})
 
 # Editar produto
-
 @app.put("/produtos/{produto_id}/", status_code=status.HTTP_200_OK, tags=['Produto'])
 async def update_produto(
     produto_id: int,
