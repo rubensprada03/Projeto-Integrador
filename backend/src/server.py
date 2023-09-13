@@ -355,4 +355,4 @@ def desativar_produto(produto_id: int, session: Session = Depends(get_db)):
     produto_existente.status = False
     session.commit()
 
-    return {"message": "Produto desativado com sucesso"}
+    return {"message": "Produto desativado com sucesso."}
