@@ -1,0 +1,47 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+  }
+
+  #search-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#search {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+#search-button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+#search-button:hover {
+    background-color: #45a049;
+}
+
+.botao-add{
+    margin-left: 1187px;
+    margin-top: -85px;
+    margin-bottom: 24px;
+}
+
+/* Selecione a classe card-img e defina as dimensões desejadas */
+.product-image {
+    width: 100px; /* Defina a largura desejada */
+    height: 250px; /* Defina a altura desejada */
+}
+
+.edit{
+    margin-left: 140px;
+}
