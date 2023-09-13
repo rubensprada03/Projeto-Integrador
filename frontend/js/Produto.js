@@ -38,6 +38,7 @@ async function listarProdutos() {
                 <div class="card-body">
                     <h5 class="card-title">${produto.nome}</h5>
                     <p class="card-text">
+                        <strong>Avaliação:</strong> ${produto.id}<br>
                         <strong>Avaliação:</strong> ${produto.avaliacao}/5<br>
                         <strong>Preço:</strong> R$ ${produto.preco.toFixed(2)}<br>
                         <strong>Descrição:</strong> ${produto.descricao_detalhada}<br>
@@ -47,6 +48,7 @@ async function listarProdutos() {
                     <button class="btn btn-primary" data-produto-id="${produto.id}" onclick="ativarProduto(this)">Ativar</button>
                     <button class="btn btn-danger" data-produto-id="${produto.id}" onclick="desativarProduto(this)">Desativar</button>
                     <button class="btn btn-warning edit" data-produto-id="${produto.id}" onclick="editarProduto(this)">Editar</button>
+                    
                 </div>
             </div>
             `;
