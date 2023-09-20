@@ -28,9 +28,7 @@ class RepositorioUsuario():
         usuario_bd = models.Usuario(nome=usuario.nome,
                                     cpf=usuario.cpf,
                                     email=usuario.email,
-                                    senha=senha_hash,
-                                    endereco=usuario.endereco,
-                                    telefone=usuario.telefone,
+                                    senha=senha_hash,                                  
                                     grupo=usuario.grupo)
         self.session.add(usuario_bd)
         self.session.commit()

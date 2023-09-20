@@ -8,8 +8,6 @@ class Usuario(BaseModel):
     email: str
     senha: str
     confirmar_senha:str
-    endereco: str
-    telefone: str
     status: bool = True
     grupo : str = "estoquista"
     

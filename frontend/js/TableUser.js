@@ -15,8 +15,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <th>ID</th>
                         <th>Nome</th>
                         <th>Email</th>
-                        <th>Endereço</th>
-                        <th>Telefone</th>
                         <th>Senha</th>
                         <th>Grupo</th>
                         <th>CPF</th>
@@ -30,8 +28,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <td>${usuario.id}</td>
                             <td>${usuario.nome}</td>
                             <td>${usuario.email}</td>
-                            <td>${usuario.endereco}</td>
-                            <td>${usuario.telefone}</td>
                             <td>${usuario.senha}</td>
                             <td>${usuario.grupo}</td>
                             <td>${usuario.cpf}</td>
@@ -58,7 +54,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             
             const filteredUsers = usuarios.filter(usuario =>
                 usuario.nome.toLowerCase().includes(searchText) ||
-                usuario.telefone.toLowerCase().includes(searchText) ||
                 usuario.cpf.toLowerCase().includes(searchText) ||
                 usuario.email.toLowerCase().includes(searchText)
             );
@@ -78,8 +73,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const email = document.getElementById("email").value;
             const senha = document.getElementById("senha").value;
             const confirmarSenha = document.getElementById("confirmar-senha").value;
-            const endereco = document.getElementById("endereco").value;
-            const telefone = document.getElementById("telefone").value;
             const grupoCriacao = document.getElementById("grupo-criacao").value;
 
             try {
@@ -94,8 +87,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         email,
                         senha,
                         confirmar_senha: confirmarSenha,
-                        endereco,
-                        telefone,
                         grupo: grupoCriacao
                     })
                 });
@@ -139,10 +130,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // PEGA OS CAMPOS EM QUE PODE SER ALTERADO
                 if (row.classList.contains("editing")) {
                     const nome = fields[1].querySelector("input").value;
-                    const cpf = fields[7].querySelector("input").value;
-                    const senha = fields[5].querySelector("input").value;
-                    const grupo = fields[6].querySelector("select").value;
-                    const status = fields[8].querySelector(".status-select").value === 'ativo';
+                    const cpf = fields[5].querySelector("input").value;
+                    const senha = fields[3].querySelector("input").value;
+                    const grupo = fields[4].querySelector("select").value;
+                    const status = fields[6].querySelector(".status-select").value === 'ativo';
 
                     // CRIA O CORPO DA REQUISIÇÃO
                     const requestBody = {
@@ -184,24 +175,24 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // SETAR PARA OS VALORES ORIGINAIS
                     const originalValues = {
                         nome: fields[1].textContent,
-                        cpf: fields[7].textContent,
-                        senha: fields[5].textContent,
-                        grupo: fields[6].textContent,
-                        status: fields[8].textContent
+                        cpf: fields[5].textContent,
+                        senha: fields[3].textContent,
+                        grupo: fields[4].textContent,
+                        status: fields[6].textContent
                     };
 
                     // SUBSTITUIR OS CAMPOS DE EDIÇÃO
                     fields[1].innerHTML = '<input type="text" value="' + originalValues.nome + '">';
-                    fields[7].innerHTML = '<input type="text" value="' + originalValues.cpf + '">';
-                    fields[5].innerHTML = '<input type="password" value="' + originalValues.senha + '">';
+                    fields[5].innerHTML = '<input type="text" value="' + originalValues.cpf + '">';
+                    fields[3].innerHTML = '<input type="password" value="' + originalValues.senha + '">';
 
                     const grupoSelect = document.createElement("select");
                     grupoSelect.innerHTML = `
                         <option value="estoquista" ${originalValues.grupo === 'estoquista' ? 'selected' : ''}>estoquista</option>
                         <option value="admin" ${originalValues.grupo === 'admin' ? 'selected' : ''}>admin</option>
                     `;
-                    fields[6].innerHTML = '';
-                    fields[6].appendChild(grupoSelect);
+                    fields[4].innerHTML = '';
+                    fields[4].appendChild(grupoSelect);
 
                     const statusSelect = document.createElement("select");
                     statusSelect.classList.add("status-select"); 
@@ -209,8 +200,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <option value="ativo" ${originalValues.status === 'Ativo' ? 'selected' : ''}>Ativo</option>
                         <option value="desativado" ${originalValues.status === 'Desativado' ? 'selected' : ''}>Desativado</option>
                     `;
-                    fields[8].innerHTML = '';
-                    fields[8].appendChild(statusSelect);
+                    fields[6].innerHTML = '';
+                    fields[6].appendChild(statusSelect);
 
                     // MUDA  O TEXTO "EDITAR" PARA "SALVAR" E AINDA VAI ADICIONAR O BOTAO CANCELAR 
                     button.textContent = "Salvar";
@@ -224,10 +215,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // EVENTO DE CLICK PARA CANCELAR EDIÇÃO E SETAR PARA OS VALORES ORIGINAIS
                     cancelButton.addEventListener("click", () => {
                         fields[1].innerHTML = originalValues.nome;
-                        fields[7].innerHTML = originalValues.cpf;
-                        fields[5].innerHTML = originalValues.senha;
-                        fields[6].innerHTML = originalValues.grupo;
-                        fields[8].innerHTML = originalValues.status;  
+                        fields[5].innerHTML = originalValues.cpf;
+                        fields[3].innerHTML = originalValues.senha;
+                        fields[4].innerHTML = originalValues.grupo;
+                        fields[6].innerHTML = originalValues.status;  
 
                         button.textContent = "Editar";
                         row.classList.remove("editing");

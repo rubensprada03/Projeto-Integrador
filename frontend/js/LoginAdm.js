@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await response.json();
                 alert("Login bem-sucedido");
 
+                // Armazene o grupo do usuário no localStorage
+                localStorage.setItem('userGroup', data.grupo);
+
                 // Exiba o modal após o login bem-sucedido
                 modal.style.display = "block";
             } else {

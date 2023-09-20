@@ -10,8 +10,6 @@ class Usuario(Base):
     cpf = Column(String(length=11))
     email = Column(String)
     senha = Column(String)
-    endereco = Column(String)
-    telefone = Column(String)
     status = Column(Boolean, default=True)
     grupo = Column(String, default="estoquista")
 

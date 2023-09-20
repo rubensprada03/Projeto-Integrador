@@ -38,7 +38,7 @@ body {
 
 /* Selecione a classe card-img e defina as dimensões desejadas */
 .product-image {
-    width: 100px; /* Defina a largura desejada */
+    width: 250px; /* Defina a largura desejada */
     height: 250px; /* Defina a altura desejada */
 }
 

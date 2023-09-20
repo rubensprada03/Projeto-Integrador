@@ -125,14 +125,16 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
         return {
             "access_token": criar_token_jwt(user.id),
             "token_type": "bearer",
+            "grupo": user.grupo
         }
     
     return {
         "access_token": criar_token_jwt(user.id),
         "token_type": "bearer",
+        "grupo": user.grupo
     }
-
-
+    
+    
 # Editar status
 @app.put('/usuario/{usuario_id}/status', status_code=status.HTTP_200_OK, tags=['Usuário'])
 def alterar_status_usuario(usuario_id: int, status: bool, session: Session = Depends(get_db)):
