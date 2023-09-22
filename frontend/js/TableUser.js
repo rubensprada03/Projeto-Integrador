@@ -118,7 +118,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // EDIÇÃO DE CAMPOS
 
+        const userGroup = localStorage.getItem('userGroup');
+
+        // Verifica se o usuário é do grupo "estoquista" e oculta os botões de edição
+        if (userGroup === 'estoquista') {
+            const editButtons = document.querySelectorAll(".edit-button");
+        
+            editButtons.forEach(button => {
+                button.style.display = 'none'; 
+            });
+        }
+
         const editButtons = document.querySelectorAll(".edit-button");
+        
 
         // SELECIONA TODOS OS BOTOES DE EDIÇÃO
         editButtons.forEach(button => {

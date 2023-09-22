@@ -8,7 +8,6 @@ async function listarProdutos() {
 
         const listaProdutos = document.getElementById('listaProdutos');
 
-<<<<<<< HEAD
         function populateTable(data) {
             const table = document.createElement('table');
             table.innerHTML = `
@@ -42,50 +41,6 @@ async function listarProdutos() {
                         </tr>
                     `).join('')}
                 </tbody>
-=======
-        produtos.forEach((produto) => {
-            const card = document.createElement('div');
-            card.className = 'col-sm-4';
-
-            const statusLabel = produto.status ? 'Ativo' : 'Desativo';
-
-            card.innerHTML = `
-            <div class="card mb-4">
-                <div id="carousel-${produto.id}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        ${produto.imagens.map((imagem, index) => `
-                            <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                                <img src="http://localhost:8000/${imagem.replace('src/', '')}" class="d-block w-100 product-image" alt="Imagem ${index + 1}">
-                            </div>
-                        `).join('')}
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${produto.id}" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Anterior</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-${produto.id}" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Próximo</span>
-                    </button>
-                </div>
-
-                <div class="card-body">
-                    <h5 class="card-title">${produto.nome}</h5>
-                    <p class="card-text">
-                        <strong>Avaliação:</strong> ${produto.id}<br>
-                        <strong>Avaliação:</strong> ${produto.avaliacao}/5<br>
-                        <strong>Preço:</strong> R$ ${produto.preco.toFixed(2)}<br>
-                        <strong>Descrição:</strong> ${produto.descricao_detalhada}<br>
-                        <strong>Quantidade em Estoque:</strong> ${produto.qtd_estoque}<br>
-                        <strong>Status:</strong> ${statusLabel}<br>
-                    </p>
-                    <button class="btn btn-primary" data-produto-id="${produto.id}" onclick="ativarProduto(this)">Ativar</button>
-                    <button class="btn btn-danger" data-produto-id="${produto.id}" onclick="desativarProduto(this)">Desativar</button>
-                    <button class="btn btn-warning edit" data-produto-id="${produto.id}" onclick="editarProduto(this)">Editar</button>
-                    
-                </div>
-            </div>
->>>>>>> a832a6279608311d0750b402f02f86c94cb136ad
             `;
             listaProdutos.innerHTML = '';
             listaProdutos.appendChild(table);
@@ -215,7 +170,7 @@ function editarProduto(button) {
         form.querySelector('#avaliacao').disabled = true;
         form.querySelector('#descricao').disabled = true;
         // Permita a edição do preço e da nota
-        form.querySelector('#preco').disabled = false;
+        form.querySelector('#preco').disabled = true;
         form.querySelector('#qtd_estoque').disabled = false;
     }
 
