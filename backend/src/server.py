@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, status, HTTPException, Response, File, UploadFile, Form
+from fastapi import FastAPI, Depends, status, HTTPException, Response, File, UploadFile, Form,Path
 from fastapi.responses import FileResponse,JSONResponse
 from typing import List
 import os 
@@ -50,6 +50,19 @@ def listar_usuario(session: Session = Depends(get_db)):
     usuario = RepositorioUsuario(session).listar()
     return usuario
 
+
+# Listar user pelo ID
+@app.get('/usuario/{usuario_id}', status_code=status.HTTP_200_OK, tags=['Usuário'])
+def obter_usuario(usuario_id: int, session: Session = Depends(get_db)):
+    repo_usuario = RepositorioUsuario(session)
+    usuario = repo_usuario.obter_por_id(usuario_id)
+
+    if usuario is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado.")
+    
+    return usuario
+
+
 # EDITAR USUARIO
 import bcrypt
 
@@ -77,7 +90,6 @@ def editar_usuario(
 
     usuario_atualizado = repo_usuario.editar(usuario_existente, campos_para_atualizar)
     return usuario_atualizado
-
 
 
 
@@ -162,7 +174,7 @@ def create_produto(produto: Produto, db: Session = Depends(get_db)):
 
 
 @app.post("/produtos/", status_code=status.HTTP_201_CREATED, tags=['Produto'])
-async def create_produto_with_images(
+async def criar_produto(
     nome: str = Form(...),
     avaliacao: int = Form(...),
     descricao_detalhada: str = Form(...),
@@ -229,6 +241,24 @@ def listar_produto(session: Session = Depends(get_db)):
     return produtos_com_imagens
 
 
+@app.get('/produtos/{produto_id}', status_code=status.HTTP_200_OK, tags=['Produto'])
+def obter_produto(produto_id: int = Path(..., title="ID do Produto"), session: Session = Depends(get_db)):
+    repo_produto = RepositorioProduto(session)
+    produto = repo_produto.obter_por_id(produto_id)
+
+    if produto is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado.")
+    
+    # Se desejar, você pode processar as imagens da mesma maneira que fez na rota de listagem
+    if produto.imagens:
+        imagens = [f"{imagem.strip()}" for imagem in produto.imagens.split(',')]
+        produto_dict = produto.__dict__
+        produto_dict['imagens'] = imagens
+        return produto_dict
+    else:
+        return produto.__dict__
+    
+
 # DELETAR produto
 @app.delete('/produtos/{produto_id}', status_code=status.HTTP_204_NO_CONTENT, tags=['Produto'])
 def excluir_produto(produto_id: int, session: Session = Depends(get_db)):
@@ -273,7 +303,7 @@ def get_produto_image(produto_id: int, db: Session = Depends(get_db)):
 
 # Editar produto
 @app.put("/produtos/{produto_id}/", status_code=status.HTTP_200_OK, tags=['Produto'])
-async def update_produto(
+async def atualizar_produto(
     produto_id: int,
     produto_data: ProdutoEdit,  # Aceita atributos do produto em JSON
     db: Session = Depends(get_db)
@@ -303,7 +333,7 @@ from typing import List
 from typing import List
 
 @app.patch("/produtos/{produto_id}/imagem/", status_code=status.HTTP_200_OK, tags=['Produto'])
-async def update_produto_images(
+async def atualizar_imagem(
     produto_id: int,
     files: List[UploadFile] = File(...),
     db: Session = Depends(get_db)
@@ -336,10 +366,6 @@ async def update_produto_images(
     db.refresh(db_produto)
 
     return db_produto
-
-
-
-    
 
 
 

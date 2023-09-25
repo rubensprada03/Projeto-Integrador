@@ -37,6 +37,9 @@ async function listarProdutos() {
                                 <button class="btn btn-primary" data-produto-id="${produto.id}" onclick="ativarProduto(this)">Ativar</button>
                                 <button class="btn btn-danger" data-produto-id="${produto.id}" onclick="desativarProduto(this)">Desativar</button>
                                 <button class="btn btn-warning" data-produto-id="${produto.id}" onclick="editarProduto(this)">Editar</button>
+                                
+                                <button class="btn btn-info" data-produto-id="${produto.id}" onclick="visualizarProduto(${produto.id})">Visualizar</button>
+                                <button class="btn btn-success" data-produto-id="${produto.id}" onclick="abrirFormulario(this)">Trocar Imagem</button>
                             </td>
                         </tr>
                     `).join('')}
@@ -45,6 +48,8 @@ async function listarProdutos() {
             listaProdutos.innerHTML = '';
             listaProdutos.appendChild(table);
         }
+        
+        
 
         populateTable(produtos);
     } catch (error) {
@@ -53,6 +58,8 @@ async function listarProdutos() {
 }
 
 window.addEventListener('load', listarProdutos);
+
+
 
 
 // CRIAR PRODUTO:
@@ -220,4 +227,52 @@ function salvarEdicao(produtoId) {
         console.error('Erro:', error);
         alert('Erro ao salvar as alterações. Verifique os dados e tente novamente.');
     });
+}
+
+
+
+
+
+
+
+
+
+
+function abrirFormulario(button) {
+    const produtoId = button.getAttribute("data-produto-id");
+    const form = document.createElement("form");
+    form.setAttribute("enctype", "multipart/form-data");
+    form.innerHTML = `
+        <input type="file" name="files" multiple>
+        <input type="submit" value="Enviar">
+    `;
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const formData = new FormData(form);
+        enviarImagem(produtoId, formData);
+        form.parentNode.removeChild(form);
+    });
+
+    button.parentNode.appendChild(form);
+}
+
+async function enviarImagem(produtoId, formData) {
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/produtos/${produtoId}/imagem/`, {
+            method: "PATCH",
+            body: formData,
+        });
+
+        if (response.ok) {
+            // A imagem foi enviada com sucesso
+            alert("Imagem atualizada com sucesso!");
+            // Atualize a página ou faça qualquer outra ação necessária
+        } else {
+            // Lidar com erros aqui
+            alert("Erro ao enviar imagem");
+        }
+    } catch (error) {
+        console.error("Erro ao enviar imagem", error);
+    }
 }
