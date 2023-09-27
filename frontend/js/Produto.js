@@ -39,7 +39,7 @@ async function listarProdutos() {
                                 <button class="btn btn-warning" data-produto-id="${produto.id}" onclick="editarProduto(this)">Editar</button>
                                 
                                 <button class="btn btn-info" data-produto-id="${produto.id}" onclick="visualizarProduto(${produto.id})">Visualizar</button>
-                                <button class="btn btn-success" data-produto-id="${produto.id}" onclick="abrirFormulario(this)">Trocar Imagem</button>
+                                <button class="btn btn-success" style="margin-top:10px" data-produto-id="${produto.id}" onclick="abrirFormulario(this)">Trocar Imagem</button>
                             </td>
                         </tr>
                     `).join('')}
@@ -64,10 +64,31 @@ window.addEventListener('load', listarProdutos);
 
 // CRIAR PRODUTO:
 // Abre o modal de criação de produto quando o botão for clicado
-document.getElementById('btnAdicionar').addEventListener('click', () => {
-    $('#modalCriarProduto').modal('show');
-});
+// Verifique o grupo do usuário no localStorage
+const userGroup = localStorage.getItem('userGroup');
 
+// Se o grupo do usuário for "estoquista", desative a funcionalidade de criação de produto
+if (userGroup === 'estoquista') {
+    const btnAdicionar = document.getElementById('btnAdicionar');
+    const produtoForm = document.getElementById('produtoForm');
+
+    // Desativa o botão para abrir o modal
+    btnAdicionar.style.display = 'none';
+
+    // Remove o evento de clique que abre o modal
+    btnAdicionar.removeEventListener('click', () => {
+        $('#modalCriarProduto').modal('show');
+    });
+
+    // Adicione um aviso ou mensagem para informar ao usuário que não pode criar produtos
+    // Por exemplo, você pode mostrar um alerta na página
+    const errorMessage = document.createElement('div');
+    errorMessage.textContent = 'Você não tem permissão para criar produtos.';
+    errorMessage.style.color = 'red';
+    produtoForm.parentNode.insertBefore(errorMessage, produtoForm);
+}
+
+// Continua com o seu código existente para a criação de produtos
 document.getElementById('produtoForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -91,6 +112,7 @@ document.getElementById('produtoForm').addEventListener('submit', async (e) => {
         alert('Erro ao criar o produto. Verifique os dados e tente novamente.');
     }
 });
+
 
 
 
@@ -145,44 +167,49 @@ function editarProduto(button) {
     const form = modal.querySelector('form');
     const produtoId = button.getAttribute('data-produto-id');
 
-    // Aqui você deve buscar os detalhes do produto pelo ID e preencher o formulário no modal.
-    // Suponhamos que você tenha obtido o objeto produto com os detalhes.
-    // Substitua este exemplo com os valores reais do produto.
-    const produto = {
-        nome: null,
-        avaliacao: null,
-        descricao_detalhada: null,
-        preco: null,
-        qtd_estoque: null,
-    };
+    // Faça uma solicitação para buscar os detalhes reais do produto pelo ID
+    fetch(`http://127.0.0.1:8000/produtos/${produtoId}`, {
+        method: 'GET',
+    })
+        .then(response => {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                throw new Error('Erro ao buscar detalhes do produto.');
+            }
+        })
+        .then(produto => {
+            // Preencha os campos do formulário com os detalhes reais do produto
+            form.querySelector('#nome').value = produto.nome;
+            form.querySelector('#avaliacao').value = produto.avaliacao;
+            form.querySelector('#descricao').value = produto.descricao_detalhada;
+            form.querySelector('#preco').value = produto.preco;
+            form.querySelector('#qtd_estoque').value = produto.qtd_estoque;
 
-    // Preencha os campos do formulário com os valores atuais do produto
-    form.querySelector('#nome').value = produto.nome;
-    form.querySelector('#avaliacao').value = produto.avaliacao;
-    form.querySelector('#descricao').value = produto.descricao_detalhada;
-    form.querySelector('#preco').value = produto.preco;
-    form.querySelector('#qtd_estoque').value = produto.qtd_estoque;
+            // Abra o modal de edição
+            $('#editarModal').modal('show');
 
-    // Abra o modal de edição
-    $('#editarModal').modal('show');
+            // Configure o botão "Salvar" para chamar a função salvarEdicao
+            const salvarButton = modal.querySelector('.btn-primary');
+            salvarButton.onclick = () => salvarEdicao(produtoId);
 
-    // Configure o botão "Salvar" para chamar a função salvarEdicao
-    const salvarButton = modal.querySelector('.btn-primary');
-    salvarButton.onclick = () => salvarEdicao(produtoId);
-
-    // Verifique o grupo do usuário e aplique limitações
-    if (userGroup === 'estoquista') {
-        // Restrinja as edições permitidas para o grupo "estoquista"
-        form.querySelector('#nome').disabled = true;
-        form.querySelector('#avaliacao').disabled = true;
-        form.querySelector('#descricao').disabled = true;
-        // Permita a edição do preço e da nota
-        form.querySelector('#preco').disabled = true;
-        form.querySelector('#qtd_estoque').disabled = false;
-    }
-
-
+            // Verifique o grupo do usuário e aplique limitações
+            if (userGroup === 'estoquista') {
+                // Restrinja as edições permitidas para o grupo "estoquista"
+                form.querySelector('#nome').disabled = true;
+                form.querySelector('#avaliacao').disabled = true;
+                form.querySelector('#descricao').disabled = true;
+                // Permita a edição do preço e da nota
+                form.querySelector('#preco').disabled = false;
+                form.querySelector('#qtd_estoque').disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao buscar detalhes do produto:', error);
+            alert('Erro ao buscar detalhes do produto. Verifique a conexão com o servidor.');
+        });
 }
+    
 
 // Função para salvar as edições feitas no modal
 function salvarEdicao(produtoId) {
@@ -231,12 +258,7 @@ function salvarEdicao(produtoId) {
 
 
 
-
-
-
-
-
-
+// Mudar imagem do produto 
 
 function abrirFormulario(button) {
     const produtoId = button.getAttribute("data-produto-id");
@@ -245,6 +267,7 @@ function abrirFormulario(button) {
     form.innerHTML = `
         <input type="file" name="files" multiple>
         <input type="submit" value="Enviar">
+        <button type="button" style="color: red" onclick="fecharFormulario(this)">Cancelar</button>
     `;
 
     form.addEventListener("submit", function (event) {
@@ -256,6 +279,12 @@ function abrirFormulario(button) {
 
     button.parentNode.appendChild(form);
 }
+
+function fecharFormulario(button) {
+    const form = button.parentNode;
+    form.parentNode.removeChild(form);
+}
+
 
 async function enviarImagem(produtoId, formData) {
     try {
@@ -276,3 +305,4 @@ async function enviarImagem(produtoId, formData) {
         console.error("Erro ao enviar imagem", error);
     }
 }
+

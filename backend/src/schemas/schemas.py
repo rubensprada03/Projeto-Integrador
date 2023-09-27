@@ -7,17 +7,44 @@ class Usuario(BaseModel):
     cpf: str
     email: str
     senha: str
-    confirmar_senha:str
+    confirmar_senha: str
     status: bool = True
-    grupo : str = "estoquista"
-    
+    grupo: str = "estoquista"
 
     @validator('cpf')
-    def validate_cpf_length(cls, cpf):
+    def validate_cpf(cls, cpf):
+        # Remova quaisquer caracteres não numéricos do CPF
+        cpf = ''.join(filter(str.isdigit, cpf))
+
+        # Verifique se o CPF tem 11 dígitos
         if len(cpf) != 11:
             raise ValueError('CPF deve ter exatamente 11 dígitos')
+
+        # Calcula o primeiro dígito verificador
+        soma = 0
+        for i in range(9):
+            soma += int(cpf[i]) * (10 - i)
+        resto = soma % 11
+        if resto < 2:
+            digito_verificador1 = 0
+        else:
+            digito_verificador1 = 11 - resto
+
+        # Calcula o segundo dígito verificador
+        soma = 0
+        for i in range(10):
+            soma += int(cpf[i]) * (11 - i)
+        resto = soma % 11
+        if resto < 2:
+            digito_verificador2 = 0
+        else:
+            digito_verificador2 = 11 - resto
+
+        # Verifica se os dígitos verificadores estão corretos
+        if int(cpf[9]) != digito_verificador1 or int(cpf[10]) != digito_verificador2:
+            raise ValueError('CPF inválido')
+
         return cpf
-    # produtos: List[produtos] = []  # Lista opcional de produtos associados ao usuário
 
 class ProdutoBase(BaseModel):
     nome: str

@@ -1,0 +1,101 @@
+*{
+    width: 100%;
+    margin: 10px
+}
+
+/* Adicione essas regras CSS no seu arquivo de estilo (styles.css ou similar) */
+
+/* Estilize o título do produto */
+.title-product {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333; /* Cor do texto */
+    margin-left: 30%;
+    margin-top: 10%;
+}
+
+/* Estilize a avaliação */
+.avaliacao {
+    font-size: 18px;
+    color: #FFD700; /* Cor de uma estrela amarela (código hexadecimal) */
+    margin-bottom: 30px;
+    margin-left: 30%;
+
+}
+
+/* Estilize outros atributos */
+.complemento {
+    font-size: 16px;
+    color: #555; /* Cor do texto mais escura */
+    margin-bottom: 5px;
+    margin-left: 58%;
+}
+
+/* Estilize as miniaturas do carrossel */
+.carousel-indicators li {
+    background-color: #333; /* Cor de fundo dos indicadores de miniaturas */
+    border: 2px solid #fff; /* Borda branca em volta dos indicadores */
+}
+
+.carousel-indicators .active {
+    background-color: #FFD700; /* Cor de fundo do indicador ativo (amarelo) */
+    border: 2px solid #FFD700; /* Borda do indicador ativo (amarelo) */
+}
+
+/* Estilize os botões de controle do carrossel */
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    font-size: 24px;
+    color: #333; /* Cor dos ícones de controle do carrossel */
+}
+
+/* Estilize os botões de controle do carrossel em hover (quando passar o mouse sobre eles) */
+.carousel-control-prev:hover, .carousel-control-next:hover {
+    background-color: transparent; /* Fundo transparente */
+}
+
+/* Estilize os botões de controle do carrossel em foco (quando estiverem focados) */
+.carousel-control-prev:focus, .carousel-control-next:focus {
+    background-color: transparent; /* Fundo transparente */
+}
+
+.prod-img{
+    width: 500px;
+    height: 200px;
+    margin-top: -12%;
+    margin-left: 28%;
+}
+
+.comprar-btn{
+    width: 200px;
+}
+
+.complemento {
+    font-size: 16px;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f0f0f0; /* Cor de fundo */
+    width: 500px;
+}
+
+.complemento:nth-child(1) {
+    border: 1px solid #555; /* Borda para Preço */
+}
+
+.complemento:nth-child(2) {
+    border: 1px solid #FF5733; /* Borda para Descrição */
+}
+
+.complemento:nth-child(3) {
+    border: 1px solid #007BFF; /* Borda para Quantidade em Estoque */
+}
+
+.complemento:nth-child(4) {
+    border: 1px solid #28A745; /* Borda para Status */
+}
+
+.comprar{
+    margin-left: 58%;
+    margin-top: 4%;
+}

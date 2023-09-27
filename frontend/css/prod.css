@@ -1,4 +1,9 @@
 /* styles.css */
+*{
+    margin: 10px;
+}
+
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -41,9 +46,4 @@ body {
     width: 250px; /* Defina a largura desejada */
     height: 250px; /* Defina a altura desejada */
 }
-
-.edit{
-    margin-left: 140px;
-}
-
 

@@ -1,0 +1,157 @@
+*{
+    box-sizing: border-box;
+}
+body {
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #C8DBF8;
+}
+
+header {
+    
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+}
+
+nav {
+    display: flex;
+    margin: 0 auto;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    gap: 15px;
+}
+
+#logo{
+    height: 35px;
+    width: 100px 
+}
+.Icones{
+    height: 35px;
+    width: 50px 
+}
+.Menu{
+    height: auto;
+    width: 100px;
+}
+
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-container {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: white;
+}
+#imagemBotao {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
+#imagemBotao img {
+    width: 30px; /* Defina o tamanho da imagem conforme desejado */
+    height: auto; /* Isso mantém a proporção da imagem */
+}
+
+input[type="text"] {
+    padding: 5px;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+
+main{
+    display: flex;
+    flex-direction: column;
+}
+
+
+    
+
+.carrossel{
+    display: flex;
+    justify-content: center;
+    gap:40px;
+    margin-top: 10px;
+    align-items: center;
+    text-align: center;
+}
+.img-carrossel{
+   
+    height: auto;
+    width: 80px ;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    transition: transform 0.3s;
+}
+
+.img-carrossel:hover{
+    transform: scale(1.1);
+}
+
+.container-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    width: calc(25% - 20px);
+}
+
+.card img {
+    max-width: 100%;
+    height: auto;
+}
+
+.card h2 {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.product-image {
+    width: 800px; /* Largura desejada */
+    max-height: 200px; /* Altura desejada */
+}
+
+
+
+footer {
+    position: absolute;
+    bottom: 0;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    margin-top: 50px;
+    width: 100%;
+}
