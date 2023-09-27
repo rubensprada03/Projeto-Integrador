@@ -19,7 +19,7 @@ class Usuario(BaseModel):
         # Verifique se o CPF tem 11 dígitos
         if len(cpf) != 11:
             raise ValueError('CPF deve ter exatamente 11 dígitos')
-
+            
         # Calcula o primeiro dígito verificador
         soma = 0
         for i in range(9):
