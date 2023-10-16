@@ -41,8 +41,6 @@ class RepositorioUsuario():
 
         return self.criar(usuario)
 
-
-
     def obter_por_email(self, email: str):
         return self.session.query(models.Usuario).filter(models.Usuario.email == email).first()
     

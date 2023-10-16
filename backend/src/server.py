@@ -4,11 +4,12 @@ from typing import List
 import os 
 import uuid
 from sqlalchemy.orm import Session
-from src.schemas.schemas import Produto, Usuario
+from src.schemas.schemas import Produto, Usuario, ClienteCreate, EnderecoEntrega
 from src.schemas.schemas import *
 from src.infra.sqlalchemy.config.database import get_db
 from src.infra.sqlalchemy.repositorios.produto import RepositorioProduto
 from src.infra.sqlalchemy.repositorios.repositorio_usuario import RepositorioUsuario
+from src.infra.sqlalchemy.repositorios.repositorio_cliente import RepositorioCliente
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from src.security import verify_password, criar_token_jwt
@@ -31,10 +32,10 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+)   
 
 # USUÁRIOS =>
-# CRIAR USUARIO                                                    
+# CRIAR USUARIO                                                  
 @app.post('/usuario', status_code=status.HTTP_201_CREATED, tags=['Usuário'])
 def criar_usuario(usuario: Usuario, session: Session = Depends(get_db)):
     if usuario.senha != usuario.confirmar_senha:
@@ -49,7 +50,6 @@ def criar_usuario(usuario: Usuario, session: Session = Depends(get_db)):
 def listar_usuario(session: Session = Depends(get_db)):
     usuario = RepositorioUsuario(session).listar()
     return usuario
-
 
 # Listar user pelo ID
 @app.get('/usuario/{usuario_id}', status_code=status.HTTP_200_OK, tags=['Usuário'])
@@ -80,16 +80,31 @@ def editar_usuario(
     if usuario_existente is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado.")
 
-    campos_permitidos = {'nome', 'cpf', 'senha', 'grupo', 'status'}
+    campos_permitidos = {'nome', 'cpf', 'grupo', 'status'}
     campos_para_atualizar = {campo: novo_usuario[campo] for campo in campos_permitidos if campo in novo_usuario}
-
-    if 'senha' in campos_para_atualizar:
-        senha = campos_para_atualizar.get('senha')
-        senha_criptografada = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
-        campos_para_atualizar['senha'] = senha_criptografada
 
     usuario_atualizado = repo_usuario.editar(usuario_existente, campos_para_atualizar)
     return usuario_atualizado
+
+
+@app.put('/usuario/{usuario_id}/senha', status_code=status.HTTP_200_OK, tags=['Usuário'])
+def editar_senha_usuario(
+    usuario_id: int,
+    senha: str,
+    session: Session = Depends(get_db)
+):
+    repo_usuario = RepositorioUsuario(session)
+    usuario_existente = repo_usuario.obter_por_id(usuario_id)
+    
+    if usuario_existente is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuário não encontrado.")
+    
+    senha_criptografada = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
+    usuario_existente.senha = senha_criptografada
+    session.commit()
+
+    return {"message": "Senha atualizada com sucesso."}
+
 
 
 
@@ -327,7 +342,6 @@ async def atualizar_produto(
 
 
 
-
 from typing import List
 
 from typing import List
@@ -397,3 +411,49 @@ def desativar_produto(produto_id: int, session: Session = Depends(get_db)):
     session.commit()
 
     return {"message": "Produto desativado com sucesso."}
+
+
+
+# ROTA DE CLIENT
+
+# CRIAR CLIENTE
+@app.post('/cliente', status_code=status.HTTP_201_CREATED, tags=['Cliente'])
+def criar_cliente(cliente: ClienteCreate, session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    cliente_criado = repo_cliente.criar(cliente)
+    return cliente_criado
+
+# ATUALIZAR CLIENTE
+@app.put('/cliente/{cliente_id}', tags=['Cliente'])
+def atualizar_cliente(cliente_id: int, cliente: ClienteUpdate, session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    cliente_atualizado = repo_cliente.atualizar(cliente_id, cliente)
+    return cliente_atualizado
+
+# ALTERAR SENHA
+@app.put('/cliente/{cliente_id}/alterar-senha', tags=['Cliente'])
+def alterar_senha(cliente_id: int, senha_update: SenhaUpdate, session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    cliente_atualizado = repo_cliente.atualizar_senha(cliente_id, senha_update)
+    return cliente_atualizado
+
+# ADICIONAR MAIS ENDEREÇOS
+@app.post('/cliente/{cliente_id}/endereco', tags=['Cliente'])
+def adicionar_endereco_cliente(cliente_id: int, endereco: EnderecoEntregaCreate, session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    novo_endereco = repo_cliente.adicionar_endereco(cliente_id, endereco)
+    return novo_endereco
+
+@app.get('/clientes', tags=['Cliente'])
+def listar_clientes(session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    return repo_cliente.listar_clientes_com_enderecos()
+
+@app.get('/clientes/{cliente_id}', tags=['Cliente'])
+def obter_cliente_por_id(cliente_id: int, session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    cliente = repo_cliente.obter_por_id_user(cliente_id)
+    if cliente:
+        return ClienteOut.from_orm(cliente) # Convertendo o objeto ORM para o esquema de saída
+    else:
+        raise HTTPException(status_code=404, detail="Cliente não encontrado")
