@@ -88,6 +88,7 @@ class ProdutoEdit(BaseModel):
 from datetime import date
 
 class EnderecoEntrega(BaseModel):
+    id: Optional[int] = None
     cep: str
     logradouro: str
     numero: str
@@ -95,6 +96,8 @@ class EnderecoEntrega(BaseModel):
     bairro: str
     cidade: str
     uf: str
+#    is_principal: bool = False
+    
 
     class Config:
         orm_mode = True
@@ -105,7 +108,7 @@ class ClienteCreate(BaseModel):
     email: str
     senha: str
     confirmar_senha: str
-    data_nascimento: date
+    data_nascimento: str
     genero: str
     endereco_entrega: EnderecoEntrega
 
@@ -146,7 +149,7 @@ class ClienteCreate(BaseModel):
     
 class ClienteUpdate(BaseModel):
     nome: Optional[str]
-    data_nascimento: Optional[date]
+    data_nascimento: Optional[str]
     genero: Optional[str]
 
 class SenhaUpdate(BaseModel):
@@ -161,10 +164,12 @@ class EnderecoEntregaCreate(BaseModel):
     bairro: str
     cidade: str
     uf: str
+    
 
 from typing import List
 
 class EnderecoEntregaOut(BaseModel):
+    id: Optional[int] = None
     cep: str
     logradouro: str
     numero: str
@@ -172,15 +177,18 @@ class EnderecoEntregaOut(BaseModel):
     bairro: str
     cidade: str
     uf: str
+    
+    
 
 class ClienteOut(BaseModel):
-    id: int
+    id: Optional[int] = None
     nome: str
     cpf: str
     email: str
-    data_nascimento: date
+    data_nascimento: str
     genero: str
     enderecos_entrega: List[EnderecoEntrega] = []
 
     class Config:
         orm_mode = True
+

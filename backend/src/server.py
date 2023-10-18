@@ -449,6 +449,7 @@ def listar_clientes(session: Session = Depends(get_db)):
     repo_cliente = RepositorioCliente(session)
     return repo_cliente.listar_clientes_com_enderecos()
 
+# OBTER CLIENTE POR ID
 @app.get('/clientes/{cliente_id}', tags=['Cliente'])
 def obter_cliente_por_id(cliente_id: int, session: Session = Depends(get_db)):
     repo_cliente = RepositorioCliente(session)
@@ -457,3 +458,36 @@ def obter_cliente_por_id(cliente_id: int, session: Session = Depends(get_db)):
         return ClienteOut.from_orm(cliente) # Convertendo o objeto ORM para o esquema de saída
     else:
         raise HTTPException(status_code=404, detail="Cliente não encontrado")
+
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="cliente/login")
+
+@app.post("/cliente/login", tags=['Cliente'])
+async def login_cliente(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    cliente = repo_cliente.autenticar(form_data.username, form_data.password)  # Aqui estou assumindo que form_data.username é o e-mail do cliente.
+    
+    if not cliente:
+        raise HTTPException(status_code=403,
+                            detail="Cliente não autorizado."
+                           )
+    
+    return {
+        "access_token": criar_token_jwt(cliente.id),
+        "token_type": "bearer",
+        "id": cliente.id
+    }
+
+
+@app.delete('/cliente/{cliente_id}/endereco', tags=['Cliente'])
+def remover_endereco_cliente(cliente_id: int, endereco_id: int, session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    repo_cliente.remover_endereco(cliente_id, endereco_id)
+    return endereco_id
+
+@app.patch('/cliente/{cliente_id}/endereco/{endereco_id}/principal', tags=['Cliente'])
+def definir_endereco_principal_endpoint(cliente_id: int, endereco_id: int, session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    repo_cliente.definir_endereco_principal(cliente_id, endereco_id)
+    return {"message": "Endereço definido como principal com sucesso!"}

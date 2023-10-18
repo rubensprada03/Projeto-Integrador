@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Cliente</title>
+    <link rel="stylesheet" href="../css/perfilCliente.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../js/Perfil.js"></script>
+</head>
+
+<body>
+    <header>
+        <h3>Perfil</h3>
+    </header>
+
+    <div class="forms">
+        <div class="infoField">
+            <label>ID:</label>
+            <span id="clienteId"></span>
+        </div>
+        <div class="infoField">
+            <label>Nome:</label>
+            <span id="clienteNome"></span>
+        </div>
+        <div class="infoField">
+            <label>CPF:</label>
+            <span id="clienteCpf"></span>
+        </div>
+        <div class="infoField">
+            <label>Email:</label>
+            <span id="clienteEmail"></span>
+        </div>
+        <div class="infoField">
+            <label>Data de Nascimento:</label>
+            <span id="clienteDataNasc"></span>
+        </div>
+        <div class="infoField">
+            <label>Gênero:</label>
+            <span id="clienteGenero"></span>
+        </div>
+        <h4>Endereços de Entrega:</h4>
+        <div id="enderecos" class="endereco">
+            <div class="infoField">
+                <label>CEP:</label>
+                <span id="clienteCep"></span>
+            </div>
+            <div class="infoField">
+                <label>Logradouro:</label>
+                <span id="clienteLogradouro"></span>
+            </div>
+            <div class="infoField">
+                <label>Número:</label>
+                <span id="clienteNumero"></span>
+            </div>
+            <div class="infoField">
+                <label>Complemento:</label>
+                <span id="clienteComplemento"></span>
+            </div>
+            <div class="infoField">
+                <label>Bairro:</label>
+                <span id="clienteBairro"></span>
+            </div>
+            <div class="infoField">
+                <label>Cidade:</label>
+                <span id="clienteCidade"></span>
+            </div>
+            <div class="infoField">
+                <label>UF:</label>
+                <span id="clienteUf"></span>
+            </div>
+            
+        </div>
+
+        <button class="addNewAddressbtn" id="addAddressBtn">Adicionar Novo Endereço</button>
+
+        <!-- Lista de campos para Adicionar Novo Endereço -->
+        <div id="addAddressFields" style="display: none;">
+            <h4>Adicionar Novo Endereço</h4>
+            <div class="infoField">
+                <label>CEP:</label>
+                <input type="text" id="newCep">
+            </div>
+            <div class="infoField">
+                <label>Logradouro:</label>
+                <input type="text" id="newLogradouro">
+            </div>
+            <div class="infoField">
+                <label>Número:</label>
+                <input type="text" id="newNumero">
+            </div>
+            <div class="infoField">
+                <label>Complemento:</label>
+                <input type="text" id="newComplemento">
+            </div>
+            <div class="infoField">
+                <label>Bairro:</label>
+                <input type="text" id="newBairro">
+            </div>
+            <div class="infoField">
+                <label>Cidade:</label>
+                <input type="text" id="newCidade">
+            </div>
+            <div class="infoField">
+                <label>UF:</label>
+                <input type="text" id="newUf">
+            </div>
+            <button class="actionOK" id="submitNewAddress" onclick="addNewAddress()">Adicionar Endereço</button>
+            <button class="cancel" id="cancelAddAddress" type="button">Cancelar</button>
+        </div>
+
+        
+        <hr>
+
+        
+
+        <!-- Botão de alteração de senha -->
+        <button class="changepsw" id="changePasswordBtn">Alterar Senha</button>
+
+        <!-- Formulário de alteração de senha (inicialmente escondido) -->
+        <div id="changePasswordForm" style="display: none;">
+            <h4>Alterar Senha</h4>
+            <div class="infoField label-senha-input">
+                <label>Nova Senha:</label>
+                <input type="password" id="newPassword">
+            </div>
+            <div class="infoField label-senha-input">
+                <label>Confirmar Nova Senha:</label>
+                <input type="password" id="confirmNewPassword">
+            </div>
+            <button class="actionOK" id="submitNewPassword">Enviar</button>
+            <button class="cancel" id="cancelPasswordChange" type="button">Cancelar</button> 
+        </div>
+
+        <button class="changepsw" id="updateProfileBtn">Atualizar Perfil</button>
+
+        <div id="updateProfileForm" style="display: none;">
+            <h4>Atualizar Perfil</h4>
+            <div class="infoField">
+                <label>Nome:</label>
+                <input type="text" id="updateNome">
+            </div>
+            <div class="infoField">
+                <label>Data de Nascimento:</label>
+                <input type="date" id="updateDataNascimento">
+            </div>
+            <div class="infoField">
+                <label>Gênero:</label>
+                <input type="text" id="updateGenero">
+            </div>
+            <button class="actionOKprofile" id="submitUpdateProfile">Enviar</button>
+            <button class="cancel" id="cancelUpdateProfile" type="button">Cancelar</button>
+        </div>
+
+        <div class="apagar">
+            ola
+        </div>
+        <div class="apagar">
+            ola
+        </div>
+        <div class="apagar">
+            ola
+        </div>
+        <div class="apagar">
+            ola
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

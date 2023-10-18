@@ -1,0 +1,162 @@
+body, h1, h2, h3, p, ul, li, form, input, label, button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+body {
+    line-height: 1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+ul {
+    list-style: none;
+}
+button {
+    background: none;
+    cursor: pointer;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-size: 30px;
+    font-weight: bold;
+    color: aliceblue;
+    background-color: gray;
+    padding: 20px;
+}
+
+.forms {
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column; /* Adicione esta linha para garantir que os elementos sejam empilhados verticalmente */
+    align-items: center; /* Centraliza os elementos horizontalmente */
+    font-size: 20px;
+    gap: 15px; /* Espaçamento entre os elementos */
+}
+
+
+input {
+    padding: 20px;
+    padding-right: 25vh;
+    background-color: rgb(96, 230, 230);
+    border-radius: 20px;
+    color: aliceblue;
+}
+
+/* div, button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 20px;
+} */
+
+/* button {
+    background-color: blueviolet;
+    color: aliceblue;
+    border-radius: 20px;
+} */
+
+.deleteAddress{
+    background-color: blueviolet;
+    color: aliceblue;
+    border-radius: 20px;
+    width: 100px;
+    height: 50px;
+    margin-top: 52px;
+}
+
+.addNewAddressbtn{
+    background-color: blueviolet;
+    color: aliceblue;
+    border-radius: 20px;
+    width: 300px;
+    height: 65px;
+    margin-top: 30px;
+}
+
+.actionOK{
+    background-color: blueviolet;
+    color: aliceblue;
+    border-radius: 20px;
+    width: 315px;
+    height: 65px;
+    margin-top: 30px;
+}
+
+.cancel{
+    background-color: red;
+    color: aliceblue;
+    border-radius: 20px;
+    width: 315px;
+    height: 65px;
+    margin-top: 30px;
+}
+
+.infoField {
+    display: block;
+    justify-content: space-between;
+    width: 80%; /* Ajuste conforme necessário */
+    margin: 10px 0;
+    background-color: rgb(96, 230, 230);
+    padding: 20px;
+    border-radius: 20px;
+    color: aliceblue;
+}
+
+.changepsw{
+    background-color: blueviolet;
+    color: aliceblue;
+    border-radius: 20px;
+    width: 215px;
+    height: 65px;
+    margin-top: 30px;   
+}
+
+.actionOKprofile{
+    background-color: blueviolet;
+    color: aliceblue;
+    border-radius: 20px;
+    width: 215px;
+    height: 65px;
+    margin-top: 30px;
+}
+
+.infoField label {
+    font-weight: bold;
+}
+
+.endereco{
+    display: flex;
+}
+
+.apagar{
+    color: aliceblue;
+}
+
+.divider-address{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.endereco-title{
+    margin-right: 20px;
+}
+
+.content-adr{
+    margin-right: 20px;
+}
+
+.mark-principal{
+    background-color: blueviolet;
+    color: aliceblue;
+    border-radius: 20px;
+    width: 100px;
+    height: 91px;
+    margin-top: 30px;
+    margin-left: 10px;
+}

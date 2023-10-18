@@ -17,7 +17,7 @@ setInterval(carrossel,1800);
 
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Função para fazer uma solicitação AJAX para a rota /produtos/
+  atualizarIndicadorCarrinho();
   function carregarProdutos() {
     fetch("http://localhost:8000/produtos/")
       .then((response) => response.json())
@@ -70,3 +70,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // Carregue os produtos inicialmente
   carregarProdutos();
 });
+
+
+
+function atualizarIndicadorCarrinho() {
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  let totalItens = carrinho.reduce((total, produto) => total + produto.quantidade, 0);
+  
+  let indicadorCarrinho = document.getElementById('carrinho-indicador');
+  if (indicadorCarrinho) {
+      indicadorCarrinho.textContent = totalItens;
+  }
+}

@@ -35,7 +35,7 @@ class Cliente(Base):
     cpf = Column(String(length=11), unique=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
     senha = Column(String, nullable=False)
-    data_nascimento = Column(Date, nullable=False)
+    data_nascimento = Column(String, nullable=False)
     genero = Column(String, nullable=False)
     
     # Relação one-to-many com a tabela EnderecoEntrega
@@ -53,6 +53,7 @@ class EnderecoEntrega(Base):
     bairro = Column(String, nullable=False)
     cidade = Column(String, nullable=False)
     uf = Column(String(length=2), nullable=False)
+    is_principal = Column(Boolean, default=False)
 
     # Relação com a tabela Cliente
     cliente = relationship("Cliente", back_populates="enderecos_entrega")

@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <th>CPF</th>
                         <th>Status</th>
                         <th>Editar</th>
+                        <th>Alterar senha
                     </tr>
                 </thead>
                 <tbody>
@@ -34,6 +35,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <td>${usuario.status ? 'Ativo' : 'Desativado'}</td>
                             <td>
                                 <button class="edit-button" data-user-id="${usuario.id}" style="cursor: pointer;">Editar</button>
+                            </td>
+                            <td>
+                                <button class="edit-button" data-user-id="${usuario.id}" style="cursor: pointer;">Alterar senha</button>
                             </td>
                         </tr>
                     `).join('')}
@@ -113,7 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             } catch (error) {
                 console.error("Erro ao criar o usuário:", error);
                 alert("Erro ao criar o usuário. Por favor, tente novamente mais tarde.");
-            }
+           }
         });
 
         // EDIÇÃO DE CAMPOS
@@ -143,7 +147,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (row.classList.contains("editing")) {
                     const nome = fields[1].querySelector("input").value;
                     const cpf = fields[5].querySelector("input").value;
-                    const senha = fields[3].querySelector("input").value;
                     const grupo = fields[4].querySelector("select").value;
                     const status = fields[6].querySelector(".status-select").value === 'ativo';
 
@@ -151,7 +154,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const requestBody = {
                         nome,
                         cpf,
-                        senha,
                         grupo, 
                         status,
                     };
@@ -188,7 +190,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const originalValues = {
                         nome: fields[1].textContent,
                         cpf: fields[5].textContent,
-                        senha: fields[3].textContent,
                         grupo: fields[4].textContent,
                         status: fields[6].textContent
                     };
@@ -196,7 +197,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // SUBSTITUIR OS CAMPOS DE EDIÇÃO
                     fields[1].innerHTML = '<input type="text" value="' + originalValues.nome + '">';
                     fields[5].innerHTML = '<input type="text" value="' + originalValues.cpf + '">';
-                    fields[3].innerHTML = '<input type="password" value="' + originalValues.senha + '">';
 
                     const grupoSelect = document.createElement("select");
                     grupoSelect.innerHTML = `
@@ -228,7 +228,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     cancelButton.addEventListener("click", () => {
                         fields[1].innerHTML = originalValues.nome;
                         fields[5].innerHTML = originalValues.cpf;
-                        fields[3].innerHTML = originalValues.senha;
                         fields[4].innerHTML = originalValues.grupo;
                         fields[6].innerHTML = originalValues.status;  
 
