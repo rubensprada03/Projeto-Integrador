@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrinho</title>
     <link rel="stylesheet" href="../css/carrinho.css"> <!-- Se você tiver um arquivo CSS para estilização -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="../js/carrinho.js" defer></script>
 </head>
 <body>
@@ -22,8 +23,86 @@
 
             <div class="resumo">
                 <p>Total de itens: <span id="total-itens">0</span></p>
-                <p>Preço total: R$ <span id="preco-total">0.00</span></p>
-                <button>Finalizar Compra</button>
+                <p>Preço total com a entrega: R$ <span id="preco-total">0.00</span></p>
+                
+                <div id="enderecoUsuario" class="endereco-info">
+                    <!-- As informações do endereço serão carregadas aqui -->
+                </div>
+
+                <div class="selecionar-endereco">
+                    <button id="abrirModalEndereco">Selecionar Endereço de Entrega</button>
+                </div>
+                
+                <p id="enderecoSelecionadoDisplay"></p>
+
+                  
+
+                <div id="modalEndereco" class="modal-endereco">
+                    <div class="modal-conteudo">
+                        <span class="close">&times;</span>
+                        <h2>Selecione o Endereço de Entrega</h2>
+                        <div id="enderecosCadastrados" class="enderecos-cadastrados">
+                            <!-- Os endereços serão carregados aqui via JavaScript -->
+                        </div>
+                        <button id="confirmarEndereco">Confirmar Endereço</button>
+                    </div>
+                </div>
+                
+
+                <div class="opcoes-frete">
+                    <label for="frete">Escolha o valor de frete:</label>
+                    <select id="frete" onchange="atualizarPrecoTotalComFrete()">
+                        <option value="0">Frete Padrão - R$10</option>
+                        <option value="1">Frete Expresso - R$20</option>
+                        <option value="2">Frete Premium - R$30</option>
+                    </select>
+                </div>
+
+                <div id="opcoesPagamento">
+                    <h3>Formas de Pagamento</h3>
+                    <form id="formPagamento">
+                      <div>
+                        <input type="radio" id="boleto" name="formaPagamento" value="boleto">
+                        <label for="boleto">Boleto</label>
+                      </div>
+                      <div>
+                        <input type="radio" id="cartao" name="formaPagamento" value="cartao">
+                        <label for="cartao">Cartão de Crédito</label>
+                      </div>
+                  
+                      <div id="detalhesCartao" style="display:none;">
+                        <input type="text" id="numeroCartao" placeholder="Número do Cartão" required>
+                        <input type="text" id="codigoVerificador" placeholder="Código Verificador" required>
+                        <input type="text" id="nomeCompleto" placeholder="Nome Completo" required>
+                        <input type="text" id="dataVencimento" placeholder="Data de Vencimento" required>
+                        <input type="number" id="quantidadeParcelas" placeholder="Quantidade de Parcelas" required>
+                      </div>
+                  
+                      <button type="submit" id="validarPedido">Confirmar metodo de Pagamento</button>
+                    </form>
+                  </div>
+
+                  
+                <button style="display: flex;" id="finalizarCompraBtn">Concluir pedido</button>
+                <!-- Botão de Finalizar Compra -->
+                <button id="checkout-button">Finalizar Compra</button>
+
+                <!-- Modal Structure -->
+                <div id="checkout-modal" class="modal">
+                    <div class="modal-content">
+                        <h4>Detalhes da Compra</h4>
+                        <p id="purchase-info"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="modal-close-btn" class="modal-close">Fechar</button>
+                        <button type="button" class="btn btn-success" onclick="concluirCompra()">Concluir</button>
+                    </div>
+                </div>
+                
+                  
+                
+                
+
             </div>
         </div>
     </main>

@@ -28,15 +28,16 @@ $(document).ready(function () {
                         enderecoHtml += '<li class="content-adr">Bairro: ' + endereco.bairro + '</li>';
                         enderecoHtml += '<li class="content-adr">Cidade: ' + endereco.cidade + '</li>';
                         enderecoHtml += '<li class="content-adr">UF: ' + endereco.uf + '</li>';
-                        enderecoHtml += '<li class="content-adr">Endereço principal: ' + endereco.is_principal + '</li>';
+                        enderecoHtml += '<li class="content-adr">Endereço principal: ' + booleanParaSimNao(endereco.is_principal) + '</li>';
+
                         enderecoHtml += '</ul >';
                         enderecoHtml += '<button class="deleteAddress" data-endereco-id="' + endereco.id + '">Excluir</button>';
-                        enderecoHtml += '<button class="mark-principal"=" ">Marcar como pricipal</button>';
+                        enderecoHtml += '<button class="mark-principal" data-endereco-id="' + endereco.id + '" >Marcar como pricipal</button>';
                         enderecoHtml += '</div><hr class="divider-address">';
 
                     }
                     $('#enderecos').html(enderecoHtml);
-                }
+                } 
                 
             },
             error: function (error) {
@@ -147,6 +148,10 @@ $(document).ready(function () {
             }
         });
     }
+    function booleanParaSimNao(valor) {
+        return valor ? "Sim" : "Não";
+      }
+      
     
     $('#newCep').on('blur', function () {
         var cep = $(this).val().replace(/\D/g, '');
@@ -205,3 +210,44 @@ $(document).on('click', '.deleteAddress', function() {
 });
 
 
+
+$(document).on('click', '.mark-principal', function() {
+    var enderecoId = $(this).data('endereco-id');  // Adicione o atributo data-endereco-id aos seus botões "Marcar como principal"
+    
+    $.ajax({
+        url: 'http://localhost:8000/cliente/' + clienteId + '/endereco/' + enderecoId + '/principal',
+        method: 'PATCH',
+        success: function(response) {
+            alert("Endereço definido como principal com sucesso!");
+            // Aqui você pode adicionar qualquer ação que deseja realizar após uma resposta bem-sucedida,
+            // como recarregar os endereços para refletir a mudança.
+        },
+        error: function(error) {
+            alert("Erro ao definir o endereço como principal: " + error.responseText);
+        }
+    });
+});
+
+// Não esqueça de adicionar o atributo data-endereco-id aos botões "Marcar como principal"
+// Exemplo:
+// enderecoHtml += '<button class="mark-principal" data-endereco-id="' + endereco.id + '">Marcar como pricipal</button>';
+
+
+$(document).on('click', '.unmark-principal', function() {
+    var enderecoId = $(this).data('endereco-id');
+    
+    $.ajax({
+        url: 'http://localhost:8000/cliente/' + clienteId + '/endereco/' + enderecoId + '/principal',
+        method: 'PATCH',
+        data: JSON.stringify({ is_principal: false }),
+        contentType: 'application/json',
+        success: function(response) {
+            alert("Endereço desativado como principal com sucesso!");
+            // Atualize a exibição ou recarregue a página
+        },
+        error: function(error) {
+            alert("Erro ao desativar o endereço como principal: " + error.responseText);
+        }
+    });
+});
+  

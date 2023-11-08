@@ -169,3 +169,27 @@ class RepositorioCliente():
 
         # Salva as alterações
         self.session.commit()
+
+
+
+    def desativar_endereco_principal(self, cliente_id: int, endereco_id: int):
+        # Obtém o cliente
+        cliente = self.session.query(models.Cliente).filter(models.Cliente.id == cliente_id).first()
+        if not cliente:
+            raise HTTPException(status_code=404, detail="Cliente não encontrado")
+
+        # Procura o endereço que deseja desativar como principal
+        endereco_principal = None
+        for endereco in cliente.enderecos_entrega:
+            if endereco.id == endereco_id and endereco.is_principal:
+                endereco_principal = endereco
+                break
+
+        if not endereco_principal:
+            raise HTTPException(status_code=404, detail="Endereço principal não encontrado ou já é não principal")
+
+        # Desativa o endereço como principal
+        endereco_principal.is_principal = False
+
+        # Salva as alterações
+        self.session.commit()

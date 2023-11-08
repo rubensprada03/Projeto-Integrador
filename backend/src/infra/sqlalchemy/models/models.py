@@ -43,7 +43,7 @@ class Cliente(Base):
 
 class EnderecoEntrega(Base):
     __tablename__ = "endereco_entrega"
-
+    
     id = Column(Integer, primary_key=True, index=True)
     cliente_id = Column(Integer, ForeignKey("cliente.id"))
     cep = Column(String(length=8), nullable=False)

@@ -2,6 +2,8 @@ ADMIN_EMAIL = admin@email.com
 ADMIN_SENHA = senha
 ADMIN_ID = 1
 
+cd backend
+
 uvicorn src.server:app --reload
 
 poetry install, para ejetar

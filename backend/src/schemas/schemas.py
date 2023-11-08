@@ -96,7 +96,7 @@ class EnderecoEntrega(BaseModel):
     bairro: str
     cidade: str
     uf: str
-#    is_principal: bool = False
+    is_principal: bool = False
     
 
     class Config:

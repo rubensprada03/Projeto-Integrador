@@ -491,3 +491,12 @@ def definir_endereco_principal_endpoint(cliente_id: int, endereco_id: int, sessi
     repo_cliente = RepositorioCliente(session)
     repo_cliente.definir_endereco_principal(cliente_id, endereco_id)
     return {"message": "Endereço definido como principal com sucesso!"}
+
+@app.patch('/cliente/{cliente_id}/endereco/{endereco_id}/nao_principal', tags=['Cliente'])
+def desativar_endereco_principal(cliente_id: int, endereco_id: int, session: Session = Depends(get_db)):
+    repo_cliente = RepositorioCliente(session)
+    try:
+        repo_cliente.desativar_endereco_principal(cliente_id, endereco_id)
+        return {"message": "Endereço desativado como principal com sucesso!"}
+    except HTTPException as e:
+        return {"error": str(e.detail)}
